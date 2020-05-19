@@ -1,0 +1,25 @@
+$bg-color: lightblue;
+$border-color: darkblue;
+
+.app {
+  font-family: helvetica, arial, sans-serif;
+  padding: 2em;
+  border: 5px solid $border-color;
+}
+
+.entries {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.buttonbar {
+  //padding: 1em;
+  //background-color: $bg-color;
+}
+
+.footer {
+  padding: .6em;
+  border: 1px solid $border-color;
+  align-content: center;
+  text-align: center;
+}
