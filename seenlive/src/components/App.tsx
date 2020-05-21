@@ -8,6 +8,7 @@ import "./../assets/scss/App.scss";
 import ArtistEntry from "../entities/ArtistEntry";
 import ArtistEntryComponent from "./ArtistEntryComponent";
 import AddArtistEntryDialog from "./AddArtistEntryDialog";
+import DateEntry from "../entities/DateEntry";
 
 export interface IProps{}
 
@@ -26,18 +27,20 @@ function App(props : IProps)
     const [openAddEntry, setOpenAddEntry] = React.useState(false);
     const [expandedEntry, setExpandedEntry] = React.useState<string | boolean>(false);
 
-    function AddArtistEntry(artist : string, date : string, remarks : string)
+    function AddArtistEntry(artist : string, date : string, location : string, remarks : string)
     {
+        var dateEntry : DateEntry = {date:date, location:location, remarks:remarks};
+
         const foundIdx : number = entries.findIndex((entry) => entry.artist === artist);
         if(foundIdx >= 0)
         {
             const tmpEntries = entries;
-            tmpEntries[foundIdx].dateEntries.push({date:date, remarks:remarks});
+            tmpEntries[foundIdx].dateEntries.push(dateEntry);
             setEntries(tmpEntries);
         }
         else
         {
-            const newEntry : ArtistEntry = {artist : artist, dateEntries : [{date:date, remarks:remarks}]};
+            const newEntry : ArtistEntry = {artist : artist, dateEntries : [dateEntry]};
             setEntries([...entries, newEntry]);
         }        
     }
@@ -46,12 +49,12 @@ function App(props : IProps)
         setOpenAddEntry(true);
     };
     
-    const handleCloseAddEntryDialog = (artist?: string, date?: string, remarks?: string) => {
+    const handleCloseAddEntryDialog = (artist?: string, date?: string, location?: string, remarks?: string) => {
         setOpenAddEntry(false);
 
         if(artist && date)
         {
-            AddArtistEntry(artist, date, remarks);
+            AddArtistEntry(artist, date, location, remarks);
         }
     };
 

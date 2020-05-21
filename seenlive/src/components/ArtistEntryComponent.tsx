@@ -1,10 +1,11 @@
 import * as React from "react";
 import ArtistEntry from "../entities/ArtistEntry";
-import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, IconButton } from "@material-ui/core";
+import { Typography, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, IconButton, Grid } from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
 import "./../assets/scss/ArtistEntryComponent.scss";
+import DateEntryComponent from "./DateEntryComponent";
 
 export interface ArtistEntryComponentProps {
     entry : ArtistEntry;
@@ -54,17 +55,17 @@ export default function ArtistEntryComponent(props : ArtistEntryComponentProps) 
                 
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                {
-                  props.entry.dateEntries
-                    .sort((a,b)=> { return a.date.localeCompare(b.date) })
-                    .map((entry) =>
-                      <div>
-                        <p>
-                          <Typography variant="body1">{entry.date} - {entry.remarks}</Typography>
-                        </p>
-                      </div>
-                  )
-                }
+                  <Grid container direction="column" justify="center" alignItems="stretch" spacing={3}>
+                  {
+                    props.entry.dateEntries
+                      .sort((a,b)=> { return a.date.localeCompare(b.date) })
+                      .map((entry) =>
+                        <Grid item xs={12}>
+                          <DateEntryComponent dateEntry={entry} />
+                          </Grid>
+                    )
+                  }
+                  </Grid>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
         </div>

@@ -1,0 +1,13 @@
+$bg-color: lightblue;
+$border-color: darkblue;
+
+.container {
+    margin: 1em;
+    border: 1px solid $border-color;
+    background-color: $bg-color;
+  }
+
+.item {
+    padding: .2em;
+    margin: .1em;
+}

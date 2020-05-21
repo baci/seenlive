@@ -11,13 +11,15 @@ export interface AddArtistEntryProps {
   id: string;
   keepMounted: boolean;
   open: boolean;
-  onClose: (artist?: string, date?: string, remarks?: string) => void;
+  onClose: (artist?: string, date?: string, location?: string, remarks?: string) => void;
 }
 
 export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
   const { onClose, open, ...other } = props;
   const [artistName, setArtistName] = React.useState("");
   const [date, setDate] = React.useState("");
+  const [location, setLocation] = React.useState("");
+  const [remarks, setRemarks] = React.useState("");
   const radioGroupRef = React.useRef<HTMLElement>(null);
 
   const handleEntering = () => {
@@ -31,7 +33,7 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
   };
 
   const handleOk = () => {
-    onClose(artistName, date, "TODO");
+    onClose(artistName, date, location, remarks);
   };
 
   const handleChangeArtist = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,6 +42,14 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
 
   const handleChangeDate = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDate((event.target as HTMLInputElement).value);
+  };
+
+  const handleChangeLocation = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation((event.target as HTMLInputElement).value);
+  };
+
+  const handleChangeRemarks = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRemarks((event.target as HTMLInputElement).value);
   };
 
   return (
@@ -57,6 +67,10 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
         <TextField required id="artist-name" label="Artist Name" variant="outlined" onChange={handleChangeArtist} />
         <p />
         <TextField required id="show-date" label="Date of Show" variant="outlined" onChange={handleChangeDate} />
+        <p />
+        <TextField id="show-location" label="Location" variant="outlined" onChange={handleChangeLocation} />
+        <p />
+        <TextField id="show-remarks" label="Remarks" variant="outlined" onChange={handleChangeRemarks} />
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={handleCancel} color="primary">
