@@ -6,5 +6,11 @@ namespace SeenLive.Server.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        [HttpPost]
+        public IActionResult Authorize(string username, string password)
+        {
+            // TODO
+            return NotFound();
+        }
     }
 }
