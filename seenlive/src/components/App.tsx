@@ -6,7 +6,7 @@ import ScrollTop from "./ScrollTop";
 
 export interface IProps{}
 
-export default function MainView(props : IProps) {
+export default function App(props : IProps) {
 
     return (
         <div>

@@ -1,8 +1,8 @@
 import * as React from "react";
 import {render} from "react-dom";
-import MainView from "./components/MainView";
+import App from "./components/App";
 
 render(
-    <MainView/>,
+    <App/>,
     document.getElementById("root"),
 );
