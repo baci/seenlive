@@ -2,7 +2,8 @@
   "rootDir": "..",
   "coverageDirectory": "<rootDir>/tests/__coverage__/",
   "setupFiles": [
-    "<rootDir>/tests/__mocks__/shim.js"
+    "<rootDir>/tests/__mocks__/shim.js",
+    "./src/setupTests.js"
   ],
   "roots": [
     "<rootDir>/src/",
@@ -26,5 +27,8 @@
   "globals": {
     "DEVELOPMENT": false,
     "FAKE_SERVER": false
-  }
+  },
+  "snapshotSerializers": [
+    "enzyme-to-json/serializer"
+  ]
 }
