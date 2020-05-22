@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-function App(props : IProps)
+function ContentPage(props : IProps)
 {
     const [entries, setEntries] = useState([] as ArtistEntry[]);
     const [openAddEntry, setOpenAddEntry] = React.useState(false);
@@ -67,15 +67,13 @@ function App(props : IProps)
     return (
         <div className="app">
             <Box>
-                <Typography variant="h3">SEEN LIVE</Typography>
-                <Typography variant="body1">Bands seen live...</Typography>
-
-                <p><Divider/></p>
-
                 <div className="buttonbar">
-                    <Grid container direction="row" justify="flex-end" alignItems="center">
+                    <Grid container direction="row" justify="flex-start" alignItems="center">
+                        <Grid item style={{flex:1}}>
+                            <Typography variant="body1">Bands seen live...</Typography>
+                        </Grid>
                         <Grid item>
-                            <Button variant="contained" color="primary" endIcon={<AddIcon />} onClick={() => handleClickAddEntry()}>
+                            <Button variant="contained" color="secondary" endIcon={<AddIcon />} onClick={() => handleClickAddEntry()}>
                                 Add Artist
                             </Button>
                             <AddArtistEntryDialog
@@ -118,4 +116,4 @@ function App(props : IProps)
 
 declare let module: object;
 
-export default hot(module)(App);
+export default hot(module)(ContentPage);
