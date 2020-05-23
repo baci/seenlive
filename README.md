@@ -11,7 +11,7 @@ The following tools are required to compile and run seenlive:
 * .NET Core 3.1
 
 ## Web Server
-* Compile seenlive-server\SeenLive.Server\SeenLive.Server.sln
+* Compile seenlive-server\SeenLive.Server.sln
 * Run SeenLive.Server project
 
 ## Web Client
