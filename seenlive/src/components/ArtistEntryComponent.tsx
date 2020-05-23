@@ -7,14 +7,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import "./../assets/scss/ArtistEntryComponent.scss";
 import DateEntryComponent from "./DateEntryComponent";
 
-export interface ArtistEntryComponentProps {
-    entry : ArtistEntry;
-
-    panelID : string;
-    expanded : boolean;
-    handleChangeExpanded : (event: React.ChangeEvent<{}>, panel: string, isExpanded: boolean) => void;
-}
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -37,16 +29,23 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
+export interface ArtistEntryComponentProps {
+  entry : ArtistEntry;
+
+  expanded : boolean;
+  handleChangeExpanded : (artistID: string) => void;
+}
+
 export default function ArtistEntryComponent(props : ArtistEntryComponentProps) {
     const classes = useStyles();
 
     return(
         <div className="entry">
-            <ExpansionPanel expanded={props.expanded} onChange={(event) => {props.handleChangeExpanded(event, props.panelID, !props.expanded)}}>
+            <ExpansionPanel expanded={props.expanded} onChange={() => {props.handleChangeExpanded(props.entry.id)}}>
                 <ExpansionPanelSummary
                   expandIcon={<ExpandMoreIcon />}
-                  aria-controls={"panel-"+props.panelID+"-content"}
-                  id={"panel-"+props.panelID+"-header"}
+                  aria-controls={"panel-" + props.entry.id + "-content"}
+                  id={"panel-" + props.entry.id + "-header"}
                 >
                 <Typography className={classes.heading}>{props.entry.artist}</Typography>
                 <Typography className={classes.secondaryHeading}>Seen {props.entry.dateEntries.length} times</Typography>
@@ -61,8 +60,14 @@ export default function ArtistEntryComponent(props : ArtistEntryComponentProps) 
                       .sort((a,b)=> { return a.date.localeCompare(b.date) })
                       .map((entry) =>
                         <Grid item xs={12}>
-                          <DateEntryComponent dateEntry={entry} />
-                          </Grid>
+                          <DateEntryComponent 
+                            dateEntry={entry} 
+                            canEdit={false}
+                            handleUserWantsToEdit={()=>{/* todo(entry.id) */}}
+                            handleUserCancelsEdit={()=>{/* todo(entry.id) */}}
+                            handleUserConfirmsEdit={(newEntry)=>{/* todo(newEntry) */}}
+                          />
+                        </Grid>
                     )
                   }
                   </Grid>

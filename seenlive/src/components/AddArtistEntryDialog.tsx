@@ -5,35 +5,36 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 import { TextField } from "@material-ui/core";
+import ArtistEntry from "../entities/ArtistEntry";
 
 export interface AddArtistEntryProps {
   classes: Record<'paper', string>;
   id: string;
   keepMounted: boolean;
   open: boolean;
-  onClose: (artist?: string, date?: string, location?: string, remarks?: string) => void;
+  onConfirm: (newEntry : ArtistEntry) => void; // TODO revert to injecting raw data here
+  onCancel: () => void;
 }
 
 export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
-  const { onClose, open, ...other } = props;
+  const { onConfirm, onCancel, open, ...other } = props;
+  
   const [artistName, setArtistName] = React.useState("");
   const [date, setDate] = React.useState("");
   const [location, setLocation] = React.useState("");
   const [remarks, setRemarks] = React.useState("");
-  const radioGroupRef = React.useRef<HTMLElement>(null);
-
-  const handleEntering = () => {
-    if (radioGroupRef.current != null) {
-      radioGroupRef.current.focus();
-    }
-  };
 
   const handleCancel = () => {
-    onClose();
+    onCancel();
   };
 
   const handleOk = () => {
-    onClose(artistName, date, location, remarks);
+    let newEntry : ArtistEntry = {
+      id: "", 
+      artist: artistName,
+      dateEntries: [{id: "", date: date, location: location, remarks: remarks}]
+    }
+    onConfirm(newEntry);
   };
 
   const handleChangeArtist = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +58,6 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
       disableBackdropClick
       disableEscapeKeyDown
       maxWidth="xs"
-      onEntering={handleEntering}
       aria-labelledby="confirmation-dialog-title"
       open={open}
       {...other}

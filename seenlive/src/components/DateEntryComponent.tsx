@@ -5,6 +5,12 @@ import "./../assets/scss/DateEntryComponent.scss";
 
 export interface DateEntryComponentProps {
     dateEntry : DateEntry;
+
+    // TODO: implement editing of date entries
+    canEdit : boolean;
+    handleUserWantsToEdit : () => void;
+    handleUserConfirmsEdit : (newDateEntry : DateEntry) => void;
+    handleUserCancelsEdit : () => void;
 }
 
 export default function DateEntryComponent(props : DateEntryComponentProps) {
