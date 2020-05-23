@@ -1,8 +1,9 @@
 import * as React from "react";
 import {useState} from "react";
 import { hot } from "react-hot-loader";
-import { Typography, Box, Divider } from "@material-ui/core";
+import { Typography, Box, Divider, Button, Container, Grid, Icon } from "@material-ui/core";
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import AddIcon from '@material-ui/icons/Add';
 import "./../assets/scss/App.scss";
 import ArtistEntry from "../entities/ArtistEntry";
 import ArtistEntryComponent from "./ArtistEntryComponent";
@@ -66,15 +67,29 @@ function ContentPage(props : IProps)
     return (
         <div className="app">
             <Box>
-                <AddArtistEntryDialog
-                    classes={{
-                        paper: classes.paper,
-                    }}
-                    id="ringtone-menu"
-                    keepMounted
-                    open={openAddEntry}
-                    onClose={handleCloseAddEntryDialog}
-                />
+                <div className="buttonbar">
+                    <Grid container direction="row" justify="flex-start" alignItems="center">
+                        <Grid item style={{flex:1}}>
+                            <Typography variant="body1">Bands seen live...</Typography>
+                        </Grid>
+                        <Grid item>
+                            <Button variant="contained" color="secondary" endIcon={<AddIcon />} onClick={() => handleClickAddEntry()}>
+                                Add Artist
+                            </Button>
+                            <AddArtistEntryDialog
+                                classes={{
+                                    paper: classes.paper,
+                                }}
+                                id="ringtone-menu"
+                                keepMounted
+                                open={openAddEntry}
+                                onClose={handleCloseAddEntryDialog}
+                                />
+                        </Grid>
+                    </Grid>
+                </div>
+
+                <p><Divider/></p>
 
                 <div className="entries">
                 {
