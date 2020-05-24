@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export interface ArtistEntryComponentProps {
   entry : ArtistEntry;
+  timesSeen : number;
 
   expanded : boolean;
   handleChangeExpanded : (artistID: string) => void;
@@ -48,7 +49,7 @@ export default function ArtistEntryComponent(props : ArtistEntryComponentProps) 
                   id={"panel-" + props.entry.id + "-header"}
                 >
                 <Typography className={classes.heading}>{props.entry.artist}</Typography>
-                <Typography className={classes.secondaryHeading}>Seen {props.entry.dateEntries.length} times</Typography>
+                <Typography className={classes.secondaryHeading}>Seen {props.timesSeen} times</Typography>
                 
                 <IconButton><EditIcon color="secondary" /></IconButton>
                 

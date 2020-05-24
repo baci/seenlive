@@ -4,7 +4,8 @@ import { OpenArtistEntry } from '../actions/actions';
 
 const mapStateToProps = (state, ownProps) => ({
     ...ownProps,
-    expanded:(state.ExpandedArtist === ownProps.entry.id)
+    timesSeen: ownProps.entry.dateEntries.length,
+    expanded: (state.ExpandedArtist === ownProps.entry.id)
 });
 
 const mapDispatchToProps = (dispatch) => ({
