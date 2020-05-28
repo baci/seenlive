@@ -7,7 +7,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    handleAddArtistClicked: () => dispatch(OpenAddArtistPrompt())
+    handleAddArtistClicked: () => dispatch(OpenAddArtistPrompt()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopMenuToolbar);

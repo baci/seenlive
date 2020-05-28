@@ -5,11 +5,11 @@ import { OpenArtistEntry } from '../actions/actions';
 const mapStateToProps = (state, ownProps) => ({
     ...ownProps,
     timesSeen: ownProps.entry.dateEntries.length,
-    expanded: (state.ExpandedArtist === ownProps.entry.id)
+    expanded: state.ExpandedArtist === ownProps.entry.id,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    handleChangeExpanded : (artistID: string) => dispatch(OpenArtistEntry(artistID)) 
+    handleChangeExpanded: (artistID: string) => dispatch(OpenArtistEntry(artistID)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArtistEntryComponent);

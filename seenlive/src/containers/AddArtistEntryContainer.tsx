@@ -5,12 +5,12 @@ import ArtistEntry from '../entities/ArtistEntry';
 
 const mapStateToProps = (state, ownProps) => ({
     ...ownProps,
-    open:(state.ActivePrompt === PROMPT_ADD_ARTIST)    
+    open: state.ActivePrompt === PROMPT_ADD_ARTIST,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    onConfirm: (newEntry : ArtistEntry) => dispatch(AddArtistEntry(newEntry)),
-    onCancel: () => dispatch(CancelAddArtistPrompt())
+    onConfirm: (newEntry: ArtistEntry) => dispatch(AddArtistEntry(newEntry)),
+    onCancel: () => dispatch(CancelAddArtistPrompt()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddArtistEntryDialog);

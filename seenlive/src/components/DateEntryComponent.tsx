@@ -1,20 +1,19 @@
-import DateEntry from "../entities/DateEntry";
-import React = require("react");
-import { Typography, Container, Grid } from "@material-ui/core";
-import "./../assets/scss/DateEntryComponent.scss";
+import DateEntry from '../entities/DateEntry';
+import React = require('react');
+import { Typography, Container, Grid } from '@material-ui/core';
+import './../assets/scss/DateEntryComponent.scss';
 
 export interface DateEntryComponentProps {
-    dateEntry : DateEntry;
+    dateEntry: DateEntry;
 
     // TODO: implement editing of date entries
-    canEdit : boolean;
-    handleUserWantsToEdit : () => void;
-    handleUserConfirmsEdit : (newDateEntry : DateEntry) => void;
-    handleUserCancelsEdit : () => void;
+    canEdit: boolean;
+    handleUserWantsToEdit: () => void;
+    handleUserConfirmsEdit: (newDateEntry: DateEntry) => void;
+    handleUserCancelsEdit: () => void;
 }
 
-export default function DateEntryComponent(props : DateEntryComponentProps) {
-
+export default function DateEntryComponent(props: DateEntryComponentProps) {
     return (
         <Container maxWidth="xl">
             <Grid container direction="row" justify="center" alignItems="center" className="container" spacing={1}>

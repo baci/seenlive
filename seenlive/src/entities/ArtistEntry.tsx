@@ -1,7 +1,7 @@
-import DateEntry from "./DateEntry";
+import DateEntry from './DateEntry';
 
 export default interface ArtistEntry {
-    id : string;
-    artist : string;
-    dateEntries : DateEntry[];
+    id: string;
+    artist: string;
+    dateEntries: DateEntry[];
 }
