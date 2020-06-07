@@ -5,7 +5,6 @@ import {
     ExpansionPanel,
     ExpansionPanelSummary,
     ExpansionPanelDetails,
-    IconButton,
     Grid,
 } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -38,7 +37,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export interface ArtistEntryComponentProps {
     entry: ArtistEntry;
-    timesSeen: number;
 
     expanded: boolean;
     handleChangeExpanded: (artistID: string) => void;
@@ -46,6 +44,8 @@ export interface ArtistEntryComponentProps {
 
 export default function ArtistEntryComponent(props: ArtistEntryComponentProps) {
     const classes = useStyles();
+
+    const timesSeen = props.entry.dateEntries.length;
 
     return (
         <div className="entry">
@@ -61,16 +61,13 @@ export default function ArtistEntryComponent(props: ArtistEntryComponentProps) {
                     id={'panel-' + props.entry.id + '-header'}
                 >
                     <Typography className={classes.heading}>{props.entry.artist}</Typography>
-                    <Typography className={classes.secondaryHeading}>Seen {props.timesSeen} times</Typography>
+                    <Typography className={classes.secondaryHeading}>Seen {timesSeen} times</Typography>
 
                     <EditIcon color="secondary" />
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                     <Grid container direction="column" justify="center" alignItems="stretch" spacing={3}>
                         {props.entry.dateEntries
-                            .sort((a, b) => {
-                                return a.date.localeCompare(b.date);
-                            })
                             .map((entry) => (
                                 <Grid item xs={12}>
                                     <DateEntryComponent

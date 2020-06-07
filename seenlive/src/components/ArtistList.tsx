@@ -2,24 +2,44 @@ import * as React from 'react';
 import { hot } from 'react-hot-loader';
 import { Typography, Box, Divider } from '@material-ui/core';
 import './../assets/scss/App.scss';
+import { useSelector, useDispatch } from 'react-redux';
+import ArtistEntryComponent from './ArtistEntryComponent';
+import { selectSortedArtists } from '../store/ArtistsSlice';
+import { UIState, UISlice, selectUIState } from '../store/UISlice';
 import ArtistEntry from '../entities/ArtistEntry';
-import ArtistEntryContainer from '../containers/ArtistEntryContainer';
+import { RootState } from '../reducers/RootReducer';
 
-export interface ArtistListProps {
-    entries: ArtistEntry[];
+function useArtistsSlice() {
+    const sortedArtists : ArtistEntry[] = useSelector((state: RootState) => selectSortedArtists(state.ArtistsState));
+
+    return {sortedArtists};
 }
 
-function ArtistList(props: ArtistListProps) {
+function useUISlice(){
+    const dispatch = useDispatch();
+
+    const uiState : UIState = useSelector((state : RootState) => selectUIState(state.UIState));
+
+    const toggleArtistExpanded = (artistID : string) => dispatch(UISlice.actions.ToggleExpandArtistEntry(artistID));
+
+    return {uiState, toggleArtistExpanded};
+}
+
+function ArtistList() {
+
+    const {sortedArtists} = useArtistsSlice();
+    const {uiState, toggleArtistExpanded} = useUISlice();
+
     return (
         <div className="app">
             <Box>
                 <div className="entries">
-                    {props.entries
-                        .sort((a: ArtistEntry, b: ArtistEntry) => {
-                            return a.artist.localeCompare(b.artist);
-                        })
-                        .map((e) => (
-                            <ArtistEntryContainer entry={e} />
+                    {sortedArtists.map((e) => (
+                            <ArtistEntryComponent
+                                entry={e}
+                                expanded={uiState.ExpandedArtistID === e.id}
+                                handleChangeExpanded={toggleArtistExpanded}
+                            />
                         ))}
                 </div>
 

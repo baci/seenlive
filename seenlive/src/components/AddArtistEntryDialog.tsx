@@ -6,27 +6,43 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 import { TextField } from '@material-ui/core';
 import ArtistEntry from '../entities/ArtistEntry';
+import { useSelector, useDispatch } from 'react-redux';
+import { UIState, UISlice, selectUIState } from '../store/UISlice';
+import { RootState } from '../reducers/RootReducer';
+import { ArtistsSlice } from '../store/ArtistsSlice';
+import { PROMPT_ADD_ARTIST } from '../actions/actions';
 
 export interface AddArtistEntryProps {
     classes: Record<'paper', string>;
     id: string;
     keepMounted: boolean;
-    open: boolean;
-    onConfirm: (newEntry: ArtistEntry) => void; // TODO revert to injecting raw data here
-    onCancel: () => void;
+}
+
+function useUISlice(){
+    const dispatch = useDispatch();
+
+    const uiState : UIState = useSelector((state: RootState) => selectUIState(state.UIState));
+
+    const closePrompt = () => dispatch(UISlice.actions.CloseAddArtistPrompt());
+    const addArtist = (newEntry : ArtistEntry) => dispatch(ArtistsSlice.actions.AddArtistEntry(newEntry));
+
+    const onConfirm = (newEntry : ArtistEntry) => {
+        closePrompt();
+        addArtist(newEntry);
+    };
+    const onCancel = closePrompt;
+
+    return {uiState, onConfirm, onCancel};
 }
 
 export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
-    const { onConfirm, onCancel, open, ...other } = props;
+    const { uiState, onConfirm, onCancel } = useUISlice();
+    const { ...other } = props;
 
     const [artistName, setArtistName] = React.useState('');
     const [date, setDate] = React.useState('');
     const [location, setLocation] = React.useState('');
     const [remarks, setRemarks] = React.useState('');
-
-    const handleCancel = () => {
-        onCancel();
-    };
 
     const handleOk = () => {
         const newEntry: ArtistEntry = {
@@ -59,7 +75,7 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
             disableEscapeKeyDown
             maxWidth="xs"
             aria-labelledby="confirmation-dialog-title"
-            open={open}
+            open={uiState.ActivePrompt === PROMPT_ADD_ARTIST}
             {...other}
         >
             <DialogTitle id="confirmation-dialog-title">Add artist entry</DialogTitle>
@@ -85,7 +101,7 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
                 <TextField id="show-remarks" label="Remarks" variant="outlined" onChange={handleChangeRemarks} />
             </DialogContent>
             <DialogActions>
-                <Button autoFocus onClick={handleCancel} color="primary">
+                <Button autoFocus onClick={onCancel} color="primary">
                     Cancel
                 </Button>
                 <Button onClick={handleOk} color="primary">

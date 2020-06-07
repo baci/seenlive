@@ -1,13 +1,15 @@
 import React = require('react');
 import { Toolbar, Container, Fab } from '@material-ui/core';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import ScrollTop from './ScrollTop';
-import VisibleArtistList from '../containers/VisibleArtistList';
-import TopMenuToolbarContainer from '../containers/TopMenuToolbarContainer';
-import AddArtistEntryContainer from '../containers/AddArtistEntryContainer';
+import TopMenuToolbar from './TopMenuToolbar';
+import AddArtistEntryDialog from './AddArtistEntryDialog';
+import ArtistList from './ArtistList';
+import { UISlice } from '../store/UISlice';
+import { useDispatch } from 'react-redux';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         paper: {
             width: '80%',
@@ -16,18 +18,25 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export interface AppProps {}
+function useUISlice(){
+    const dispatch = useDispatch();
 
-export default function App(props: AppProps) {
+    const openAddArtistPrompt = () => dispatch(UISlice.actions.OpenAddArtistPrompt());
+
+    return {openAddArtistPrompt};
+}
+
+export default function App() {
     const classes = useStyles();
+    const {openAddArtistPrompt} = useUISlice();
 
     return (
         <div>
-            <TopMenuToolbarContainer />
+            <TopMenuToolbar handleAddArtistClicked={() => openAddArtistPrompt() }/>
 
             <Toolbar id="back-to-top-anchor" />
 
-            <AddArtistEntryContainer
+            <AddArtistEntryDialog
                 classes={{
                     paper: classes.paper,
                 }}
@@ -36,10 +45,10 @@ export default function App(props: AppProps) {
             />
 
             <Container>
-                <VisibleArtistList />
+                <ArtistList />
             </Container>
 
-            <ScrollTop {...props}>
+            <ScrollTop>
                 <Fab color="secondary" size="small" aria-label="scroll back to top">
                     <KeyboardArrowUpIcon />
                 </Fab>
