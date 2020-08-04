@@ -9,7 +9,7 @@ import ArtistEntry from '../entities/ArtistEntry';
 import { useSelector, useDispatch } from 'react-redux';
 import { UIState, UISlice, selectUIState } from '../store/UISlice';
 import { RootState } from '../reducers/RootReducer';
-import { ArtistsSlice } from '../store/ArtistsSlice';
+import { AddArtistEntryThunk } from '../store/ArtistsSlice';
 import { PROMPT_ADD_ARTIST } from '../actions/actions';
 
 export interface AddArtistEntryProps {
@@ -24,7 +24,7 @@ function useUISlice(){
     const uiState : UIState = useSelector((state: RootState) => selectUIState(state.UIState));
 
     const closePrompt = () => dispatch(UISlice.actions.CloseAddArtistPrompt());
-    const addArtist = (newEntry : ArtistEntry) => dispatch(ArtistsSlice.actions.AddArtistEntry(newEntry));
+    const addArtist = (newEntry : ArtistEntry) => dispatch(AddArtistEntryThunk(newEntry));
 
     const onConfirm = (newEntry : ArtistEntry) => {
         closePrompt();

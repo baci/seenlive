@@ -1,5 +1,7 @@
-import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { createSlice, createSelector, createAsyncThunk } from '@reduxjs/toolkit';
 import ArtistEntry from '../entities/ArtistEntry';
+import { AddArtistEntry, GetArtistEntries } from '../api/BandApi';
+import { AxiosResponse } from 'axios';
 
 export interface ArtistsState{
     nextArtistId : number;
@@ -11,36 +13,40 @@ const initialState : ArtistsState = {
     artistEntries: []
 };
 
+export const AddArtistEntryThunk = createAsyncThunk(
+    'api/Band/AddArtistEntry',
+    async (newEntry: ArtistEntry) => {
+        const newArtistEntries = await AddArtistEntry(newEntry);
+        return (newArtistEntries as ArtistEntry[]);
+    }
+);
+
+export const GetArtistEntriesThunk = createAsyncThunk(
+    'api/Band/GetArtistEntries',
+    async () => {
+        const newArtistEntries = await GetArtistEntries();
+        return (newArtistEntries as ArtistEntry[]);
+    }
+);
+
 export const ArtistsSlice = createSlice({
     name: 'ArtistsSlice',
     initialState,
     reducers: {
-        AddArtistEntry (state : ArtistsState, action : PayloadAction<ArtistEntry>) {
-            const existingArtistIdx: number = state.artistEntries.findIndex((entry) => entry.artist === action.payload.artist);
-            if (existingArtistIdx >= 0) {
-                let newArtistEntries = state.artistEntries.map((entry, entryIdx) =>
-                    entryIdx === existingArtistIdx
-                        ? {...entry, dateEntries: [...entry.dateEntries, action.payload.dateEntries[0]]}
-                        : entry);
-                return {
-                    ...state,
-                    artistEntries: newArtistEntries
-                } as ArtistsState;
-            }
-
-            let curArtistId = state.nextArtistId;
-
+    },
+    extraReducers: builder => {
+        builder.addCase(AddArtistEntryThunk.fulfilled, (state: ArtistsState, action) => {
             return {
-                nextArtistId: state.nextArtistId + 1,
-                artistEntries: [
-                    ...state.artistEntries,
-                    {
-                        ...(action.payload as ArtistEntry),
-                        id: curArtistId
-                    },
-                ]
-            } as ArtistsState;
-        }
+                ...state,
+                artistEntries: action.payload
+            };
+        })
+        .addCase(GetArtistEntriesThunk.fulfilled, (state: ArtistsState, action) => {
+            return {
+                ...state,
+                artistEntries: action.payload
+            };
+        });
     }
 });
 
