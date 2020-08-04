@@ -9,24 +9,42 @@ namespace SeenLive.Server.Controllers
     [ApiController]
     public class BandController : ControllerBase
     {
-        private IEnumerable<ConcertEntryDTO> _concertEntries;
+        private static IList<ArtistEntryDTO> _artistEntries;
+
+        private static int _newGuid = 0;
 
         [HttpPost]
-        public IActionResult AddConcertEntry(ConcertEntryDTO concertEntry)
+        public ActionResult<IEnumerable<ArtistEntryDTO>> AddArtistEntry(ArtistEntryDTO artistEntry)
         {
+            if (artistEntry == null)
+                return BadRequest();
+
+            // TODO: put this into the business logic / CQRS part
+
             // TODO: save as JSON object to local file for now
+            _artistEntries ??= new List<ArtistEntryDTO>();
 
-            _concertEntries ??= new List<ConcertEntryDTO>();
+            // TODO: generate IDs properly, use a proper request DTO for access safety
+            if (_artistEntries.ToList().Exists(entry => entry.Artist == artistEntry.Artist))
+            {
+                artistEntry.DateEntries.FirstOrDefault().Id = (_newGuid++).ToString();
+                _artistEntries.Where(entry => entry.Artist == artistEntry.Artist).Single().DateEntries.Add(artistEntry.DateEntries.FirstOrDefault());
+            }
+            else
+            {                
+                artistEntry.Id = (_newGuid++).ToString();
+                artistEntry.DateEntries.FirstOrDefault().Id = (_newGuid++).ToString();
 
-            _concertEntries.ToList().Add(concertEntry);
+                _artistEntries.Add(artistEntry);
+            }            
 
-            return Ok();
+            return Ok(_artistEntries);
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ConcertEntryDTO>> GetConcertEntries()
+        public ActionResult<IEnumerable<ArtistEntryDTO>> GetArtistEntries()
         {
-            return Ok(_concertEntries);
+            return Ok(_artistEntries);
         }
     }
 }
