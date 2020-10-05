@@ -17,5 +17,5 @@ The following tools are required to compile and run seenlive:
 ## Web Client
 Assumes that the server is running. Execute from PowerShell:
 * cd seenlive
-* npm install
-* npm start
+* yarn install
+* yarn start
