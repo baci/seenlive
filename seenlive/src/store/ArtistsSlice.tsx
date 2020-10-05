@@ -1,7 +1,6 @@
 import { createSlice, createSelector, createAsyncThunk } from '@reduxjs/toolkit';
 import ArtistEntry from '../entities/ArtistEntry';
 import { AddArtistEntry, GetArtistEntries } from '../api/BandApi';
-import { AxiosResponse } from 'axios';
 
 export interface ArtistsState{
     nextArtistId : number;
