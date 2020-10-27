@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SeenLive.Server.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,40 +10,51 @@ namespace SeenLive.Server.Controllers
     [ApiController]
     public class BandController : ControllerBase
     {
-        private static IList<ArtistEntryDTO> _artistEntries;
+        private static IList<ArtistEntry> _artistEntries;
 
-        private static int _newGuid = 0;
+        private static int _newArtistGuid = 0;
+        private static int _newDateGuid = 0;
 
         [HttpPost]
-        public ActionResult<IEnumerable<ArtistEntryDTO>> AddArtistEntry(ArtistEntryDTO artistEntry)
+        public ActionResult<IEnumerable<ArtistEntry>> AddArtistEntry(ArtistCreationRequestDTO artistRequest)
         {
-            if (artistEntry == null)
-                return BadRequest();
+            if (artistRequest == null)
+                return BadRequest("Artist creation request is missing");
 
-            // TODO: put this into the business logic / CQRS part
-
-            // TODO: save as JSON object to local file for now
-            _artistEntries ??= new List<ArtistEntryDTO>();
-
-            // TODO: generate IDs properly, use a proper request DTO for access safety
-            if (_artistEntries.ToList().Exists(entry => entry.Artist == artistEntry.Artist))
+            try
             {
-                artistEntry.DateEntries.FirstOrDefault().Id = (_newGuid++).ToString();
-                _artistEntries.Where(entry => entry.Artist == artistEntry.Artist).Single().DateEntries.Add(artistEntry.DateEntries.FirstOrDefault());
+                // TODO: put this into the business logic / CQRS part
+
+                // TODO: save as JSON object to local file for now
+                _artistEntries ??= new List<ArtistEntry>();
+
+                var artistEntry = _artistEntries.SingleOrDefault(entry => entry.ArtistName == artistRequest.ArtistName);
+                if (artistEntry == null)
+                {
+                    artistEntry = new ArtistEntry("Artist-" + (_newArtistGuid++).ToString(), artistRequest.ArtistName);
+                    _artistEntries.Add(artistEntry);
+                }
+                artistRequest.DateEntryRequests.ToList().ForEach(dateEntry =>
+                {
+                    artistEntry.DateEntries.Add(new DateEntry()
+                    {
+                        Id = "Date-" + (_newDateGuid++).ToString(),
+                        Date = dateEntry.Date,
+                        Location = dateEntry.Location,
+                        Remarks = dateEntry.Remarks
+                    });
+                });
+
+                return Ok(_artistEntries);
             }
-            else
-            {                
-                artistEntry.Id = (_newGuid++).ToString();
-                artistEntry.DateEntries.FirstOrDefault().Id = (_newGuid++).ToString();
-
-                _artistEntries.Add(artistEntry);
-            }            
-
-            return Ok(_artistEntries);
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ArtistEntryDTO>> GetArtistEntries()
+        public ActionResult<IEnumerable<ArtistEntry>> GetArtistEntries()
         {
             return Ok(_artistEntries);
         }

@@ -1,6 +1,6 @@
 ﻿namespace SeenLive.Server.Models
 {
-    public class DateEntryDTO
+    public class DateEntry
     {
         public string Id { get; set; }
         public string Date { get; set; }

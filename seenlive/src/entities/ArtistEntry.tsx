@@ -2,6 +2,6 @@ import DateEntry from './DateEntry';
 
 export default interface ArtistEntry {
     id: string;
-    artist: string;
+    artistName: string;
     dateEntries: DateEntry[];
 }

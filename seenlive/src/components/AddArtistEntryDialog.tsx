@@ -5,12 +5,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
 import { TextField } from '@material-ui/core';
-import ArtistEntry from '../entities/ArtistEntry';
 import { useSelector, useDispatch } from 'react-redux';
 import { UIState, UISlice, selectUIState } from '../store/UISlice';
 import { RootState } from '../reducers/RootReducer';
 import { AddArtistEntryThunk } from '../store/ArtistsSlice';
 import { PROMPT_ADD_ARTIST } from '../actions/actions';
+import ArtistCreationRequestDTO from '../entities/ArtistCreationRequestDTO';
+import DateEntryCreationRequestDTO from '../entities/DateEntryCreationRequestDTO';
 
 export interface AddArtistEntryProps {
     classes: Record<'paper', string>;
@@ -24,9 +25,9 @@ function useUISlice(){
     const uiState : UIState = useSelector((state: RootState) => selectUIState(state.UIState));
 
     const closePrompt = () => dispatch(UISlice.actions.CloseAddArtistPrompt());
-    const addArtist = (newEntry : ArtistEntry) => dispatch(AddArtistEntryThunk(newEntry));
+    const addArtist = (newEntry : ArtistCreationRequestDTO) => dispatch(AddArtistEntryThunk(newEntry));
 
-    const onConfirm = (newEntry : ArtistEntry) => {
+    const onConfirm = (newEntry : ArtistCreationRequestDTO) => {
         closePrompt();
         addArtist(newEntry);
     };
@@ -45,10 +46,9 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
     const [remarks, setRemarks] = React.useState('');
 
     const handleOk = () => {
-        const newEntry: ArtistEntry = {
-            id: '',
-            artist: artistName,
-            dateEntries: [{ id: '', date: date, location: location, remarks: remarks }],
+        const newEntry: ArtistCreationRequestDTO = {
+            artistName: artistName,
+            dateEntryRequests: [{ date: date, location: location, remarks: remarks }] as DateEntryCreationRequestDTO[],
         };
         onConfirm(newEntry);
     };

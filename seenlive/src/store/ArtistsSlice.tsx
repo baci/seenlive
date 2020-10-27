@@ -1,6 +1,7 @@
 import { createSlice, createSelector, createAsyncThunk } from '@reduxjs/toolkit';
 import ArtistEntry from '../entities/ArtistEntry';
 import { AddArtistEntry, GetArtistEntries } from '../api/BandApi';
+import ArtistCreationRequestDTO from '../entities/ArtistCreationRequestDTO';
 
 export interface ArtistsState{
     nextArtistId : number;
@@ -14,7 +15,7 @@ const initialState : ArtistsState = {
 
 export const AddArtistEntryThunk = createAsyncThunk(
     'api/Band/AddArtistEntry',
-    async (newEntry: ArtistEntry) => {
+    async (newEntry: ArtistCreationRequestDTO) => {
         const newArtistEntries = await AddArtistEntry(newEntry);
         return (newArtistEntries as ArtistEntry[]);
     }
@@ -53,7 +54,7 @@ export const selectSortedArtists = createSelector(
     [state => state as ArtistsState],
     (unsortedState : ArtistsState) => (
         unsortedState.artistEntries.map(entry => entry).sort((a: ArtistEntry, b: ArtistEntry) => {
-            return a.artist.localeCompare(b.artist);
+            return a.artistName.localeCompare(b.artistName);
          })
     )
 );

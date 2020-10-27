@@ -60,7 +60,7 @@ export default function ArtistEntryComponent(props: ArtistEntryComponentProps) {
                     aria-controls={'panel-' + props.entry.id + '-content'}
                     id={'panel-' + props.entry.id + '-header'}
                 >
-                    <Typography className={classes.heading}>{props.entry.artist}</Typography>
+                    <Typography className={classes.heading}>{props.entry.artistName}</Typography>
                     <Typography className={classes.secondaryHeading}>Seen {timesSeen} times</Typography>
 
                     <EditIcon color="secondary" />
