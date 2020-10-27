@@ -10,6 +10,9 @@ The following tools are required to compile and run seenlive locally:
 * NodeJS, NPM and Yarn (additional dependencies loaded from package definitions)
 * .NET Core 3.1
 
+## Database
+* MongoDB Atlas M0 Cluster
+
 ## Web Server
 * Compile seenlive-server\SeenLive.Server.sln
 * Run SeenLive.Server project
