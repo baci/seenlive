@@ -6,8 +6,8 @@ The Frontend is written in React / Typescript, the backend in ASP.NET Core and C
 # Installation / Execution
 
 ## Requirements
-The following tools are required to compile and run seenlive:
-* NodeJS and NPM (additional dependencies loaded from package definitions)
+The following tools are required to compile and run seenlive locally:
+* NodeJS, NPM and Yarn (additional dependencies loaded from package definitions)
 * .NET Core 3.1
 
 ## Web Server
