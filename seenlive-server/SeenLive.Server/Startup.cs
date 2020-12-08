@@ -8,7 +8,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using SeenLive.Server.Models;
+using SeenLive.Server.Services;
 
 namespace SeenLive.Server
 {
@@ -21,7 +24,6 @@ namespace SeenLive.Server
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services
@@ -71,24 +73,24 @@ namespace SeenLive.Server
                 options.AddPolicy("AllowAnyMethod", options => options.AllowAnyMethod());
                 options.AddPolicy("AllowHeader", options => options.AllowAnyHeader());
             });
-            // TODO add bearer authentication
-            // TODO configure DI for application services, e.g. services.AddScoped<IService, Service>(); 
 
-            //services.AddDirectoryBrowser(); // TODO necessary?
-            //services.AddControllers();
+            // TODO add bearer authentication
+
+            // database setup with appsettings configuration
+            services.Configure<SeenLiveDatabaseSettings>(Configuration.GetSection(nameof(SeenLiveDatabaseSettings)));
+            services.AddSingleton<ISeenLiveDatabaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<SeenLiveDatabaseSettings>>().Value);
+
+            // TODO configure DI for application services, e.g. services.AddScoped<IService, Service>(); 
+            services.AddSingleton<ArtistService>();
+            services.AddSingleton<DatesService>();
+
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // configure entry point for client - TODO necessary?
-            //PhysicalFileProvider fileProvider = new PhysicalFileProvider(env.ContentRootPath);
-            //DefaultFilesOptions defOptions = new DefaultFilesOptions();
-            //defOptions.DefaultFileNames.Clear();
-            //defOptions.FileProvider = fileProvider;
-            //defOptions.DefaultFileNames.Add("index.html");
-            //app.UseDefaultFiles(defOptions);
-
             app.UseCors(option =>
             {
                 option.AllowAnyOrigin();
@@ -113,10 +115,9 @@ namespace SeenLive.Server
                 options.SwaggerEndpoint("/swagger/seenlive-v1/swagger.json", "SeenLive API");
             });
             app.UseMvc();
-            //app.UseStaticFiles(); // TODO necessary?
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(env.ContentRootPath), // TODO use file provider from above?
+                FileProvider = new PhysicalFileProvider(env?.ContentRootPath), // TODO use file provider from above?
                 RequestPath = new PathString("")
             });
         }
