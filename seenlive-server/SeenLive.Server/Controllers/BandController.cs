@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SeenLive.Server.Models;
+using SeenLive.Server.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,42 +11,40 @@ namespace SeenLive.Server.Controllers
     [ApiController]
     public class BandController : ControllerBase
     {
-        private static IList<ArtistEntry> _artistEntries;
+        private readonly ArtistService _artistService;
+        private readonly DatesService _datesService;
 
-        private static int _newArtistGuid = 0;
-        private static int _newDateGuid = 0;
+        public BandController(ArtistService artistService, DatesService datesService)
+        {
+            _artistService = artistService;
+            _datesService = datesService;
+        }
 
         [HttpPost]
-        public ActionResult<IEnumerable<ArtistEntry>> AddArtistEntry(ArtistCreationRequestDTO artistRequest)
+        public ActionResult<IEnumerable<ArtistResponseDTO>> AddArtistEntry(ArtistCreationRequestDTO artistRequest)
         {
             if (artistRequest == null)
                 return BadRequest("Artist creation request is missing");
 
             try
             {
-                // TODO: put this into the business logic / CQRS part
+                // TODO: extract this into a business logic / CQRS layer
 
-                // TODO: save as JSON object to local file for now
-                _artistEntries ??= new List<ArtistEntry>();
+                ArtistEntry artistEntry = _artistService.Get().SingleOrDefault(entry => entry.ArtistName == artistRequest.ArtistName);
+                IEnumerable<string> dateEntryIDs = CreateDateEntries(artistRequest.DateEntryRequests);
 
-                var artistEntry = _artistEntries.SingleOrDefault(entry => entry.ArtistName == artistRequest.ArtistName);
                 if (artistEntry == null)
                 {
-                    artistEntry = new ArtistEntry("Artist-" + (_newArtistGuid++).ToString(), artistRequest.ArtistName);
-                    _artistEntries.Add(artistEntry);
+                    artistEntry = new ArtistEntry(string.Empty, artistRequest.ArtistName, dateEntryIDs);
+                    _artistService.Create(artistEntry);
                 }
-                artistRequest.DateEntryRequests.ToList().ForEach(dateEntry =>
+                else
                 {
-                    artistEntry.DateEntries.Add(new DateEntry()
-                    {
-                        Id = "Date-" + (_newDateGuid++).ToString(),
-                        Date = dateEntry.Date,
-                        Location = dateEntry.Location,
-                        Remarks = dateEntry.Remarks
-                    });
-                });
+                    artistEntry.AddDateEntries(dateEntryIDs);
+                    _artistService.Update(artistEntry.Id, artistEntry);
+                }
 
-                return Ok(_artistEntries);
+                return Ok(GetAndConvertArtistEntries());
             }
             catch (Exception)
             {
@@ -54,9 +53,33 @@ namespace SeenLive.Server.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ArtistEntry>> GetArtistEntries()
+        public ActionResult<IEnumerable<ArtistResponseDTO>> GetArtistEntries()
         {
-            return Ok(_artistEntries);
+            try
+            {
+                return Ok(GetAndConvertArtistEntries());
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        private IEnumerable<string> CreateDateEntries(IEnumerable<DateEntryCreationRequestDTO> requests)
+        {
+            return requests.Select(request =>
+            {
+                DateEntry newDateEntry = new DateEntry { Id = string.Empty, Date = request.Date, Location = request.Location, Remarks = request.Remarks };
+                newDateEntry = _datesService.Create(newDateEntry);
+                return newDateEntry?.Id;
+            });
+        }
+
+        private IEnumerable<ArtistResponseDTO> GetAndConvertArtistEntries()
+        {
+            return _artistService.Get().Select(entry =>
+                    new ArtistResponseDTO(entry.Id, entry.ArtistName, entry.DateEntryIDs.Select(dateId => _datesService.Get(dateId)).ToList()));
+
         }
     }
 }

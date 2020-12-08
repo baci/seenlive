@@ -4,15 +4,19 @@ import { Typography, Box, Divider } from '@material-ui/core';
 import './../assets/scss/App.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import ArtistEntryComponent from './ArtistEntryComponent';
-import { selectSortedArtists } from '../store/ArtistsSlice';
+import { GetArtistEntriesThunk, selectSortedArtists } from '../store/ArtistsSlice';
 import { UIState, UISlice, selectUIState } from '../store/UISlice';
 import ArtistEntry from '../entities/ArtistEntry';
 import { RootState } from '../reducers/RootReducer';
+import { useEffect } from 'react';
 
 function useArtistsSlice() {
+    const dispatch = useDispatch();
     const sortedArtists : ArtistEntry[] = useSelector((state: RootState) => selectSortedArtists(state.ArtistsState));
 
-    return {sortedArtists};
+    const getArtists = () => dispatch(GetArtistEntriesThunk());
+
+    return {sortedArtists, getArtists};
 }
 
 function useUISlice(){
@@ -27,8 +31,12 @@ function useUISlice(){
 
 function ArtistList() {
 
-    const {sortedArtists} = useArtistsSlice();
+    const {sortedArtists, getArtists} = useArtistsSlice();
     const {uiState, toggleArtistExpanded} = useUISlice();
+
+    useEffect(() => {
+        getArtists();
+    });
 
     return (
         <div className="app">
