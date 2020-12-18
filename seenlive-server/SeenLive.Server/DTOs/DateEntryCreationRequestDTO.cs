@@ -1,4 +1,4 @@
-﻿namespace SeenLive.Server.Models
+﻿namespace SeenLive.Server.DTOs
 {
     public class DateEntryCreationRequestDTO
     {

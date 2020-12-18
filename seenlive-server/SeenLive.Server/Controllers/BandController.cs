@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using SeenLive.Server.DTOs;
 using SeenLive.Server.Models;
 using SeenLive.Server.Services;
 using System;
@@ -11,11 +13,13 @@ namespace SeenLive.Server.Controllers
     [ApiController]
     public class BandController : ControllerBase
     {
-        private readonly ArtistService _artistService;
-        private readonly DatesService _datesService;
+        private readonly IMapper _mapper;
+        private readonly IArtistService _artistService;
+        private readonly IDatesService _datesService;
 
-        public BandController(ArtistService artistService, DatesService datesService)
+        public BandController(IMapper mapper, IArtistService artistService, IDatesService datesService)
         {
+            _mapper = mapper;
             _artistService = artistService;
             _datesService = datesService;
         }
@@ -29,7 +33,7 @@ namespace SeenLive.Server.Controllers
             try
             {
                 // TODO: extract this into a business logic / CQRS layer
-
+                
                 ArtistEntry artistEntry = _artistService.Get().SingleOrDefault(entry => entry.ArtistName == artistRequest.ArtistName);
                 IEnumerable<string> dateEntryIDs = CreateDateEntries(artistRequest.DateEntryRequests);
 
@@ -44,7 +48,7 @@ namespace SeenLive.Server.Controllers
                     _artistService.Update(artistEntry.Id, artistEntry);
                 }
 
-                return Ok(GetAndConvertArtistEntries());
+                return Ok(GetArtistEntriesAsDTO());
             }
             catch (Exception)
             {
@@ -57,7 +61,7 @@ namespace SeenLive.Server.Controllers
         {
             try
             {
-                return Ok(GetAndConvertArtistEntries());
+                return Ok(GetArtistEntriesAsDTO());
             }
             catch (Exception)
             {
@@ -69,17 +73,15 @@ namespace SeenLive.Server.Controllers
         {
             return requests.Select(request =>
             {
-                DateEntry newDateEntry = new DateEntry { Id = string.Empty, Date = request.Date, Location = request.Location, Remarks = request.Remarks };
-                newDateEntry = _datesService.Create(newDateEntry);
+                DateEntry newDateEntry = _datesService.Create(_mapper.Map<DateEntry>(request));
                 return newDateEntry?.Id;
             });
         }
 
-        private IEnumerable<ArtistResponseDTO> GetAndConvertArtistEntries()
+        private IEnumerable<ArtistResponseDTO> GetArtistEntriesAsDTO()
         {
-            return _artistService.Get().Select(entry =>
-                    new ArtistResponseDTO(entry.Id, entry.ArtistName, entry.DateEntryIDs.Select(dateId => _datesService.Get(dateId)).ToList()));
-
+            var ret = _artistService.Get().Select(entry => _mapper.Map<ArtistResponseDTO>(entry));
+            return ret;
         }
     }
 }

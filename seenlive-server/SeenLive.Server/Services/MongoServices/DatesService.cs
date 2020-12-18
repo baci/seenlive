@@ -1,10 +1,11 @@
 ﻿using MongoDB.Driver;
 using SeenLive.Server.Models;
+using SeenLive.Server.Settings;
 using System.Collections.Generic;
 
-namespace SeenLive.Server.Services
+namespace SeenLive.Server.Services.MongoServices
 {
-    public class DatesService
+    public class DatesService : IDatesService
     {
         private readonly IMongoCollection<DateEntry> _dateEntries;
 

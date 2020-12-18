@@ -1,12 +1,12 @@
 ﻿using MongoDB.Driver;
 using SeenLive.Server.Models;
+using SeenLive.Server.Settings;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SeenLive.Server.Services
+namespace SeenLive.Server.Services.MongoServices
 {
-    // TODO encapsulate mongo access. have a generic ArtistService that doesn't know about the DB implementation.
-    public class ArtistService
+    public class ArtistService : IArtistService
     {
         private readonly IMongoCollection<ArtistEntry> _artistEntries;
 
