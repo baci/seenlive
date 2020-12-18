@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SeenLive.Server.Models
+namespace SeenLive.Server.DTOs
 {
     public class ArtistCreationRequestDTO
     {

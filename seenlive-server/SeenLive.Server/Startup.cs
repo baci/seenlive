@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,8 +11,10 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using SeenLive.Server.Models;
 using SeenLive.Server.Services;
+using SeenLive.Server.Services.MongoServices;
+using SeenLive.Server.Settings;
+using SeenLive.Server.Settings.MongoSettings;
 
 namespace SeenLive.Server
 {
@@ -81,9 +84,11 @@ namespace SeenLive.Server
             services.AddSingleton<ISeenLiveDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<SeenLiveDatabaseSettings>>().Value);
 
-            // TODO configure DI for application services, e.g. services.AddScoped<IService, Service>(); 
-            services.AddSingleton<ArtistService>();
-            services.AddSingleton<DatesService>();
+            // configure AutoMapper for mapping between data models and DTOs
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddScoped<IArtistService, ArtistService>();
+            services.AddScoped<IDatesService, DatesService>();            
 
             services.AddControllers();
         }
