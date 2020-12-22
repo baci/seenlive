@@ -123,7 +123,7 @@ namespace SeenLive.Server
             app.UseMvc();
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(env?.ContentRootPath), // TODO use file provider from above?
+                FileProvider = new PhysicalFileProvider(env?.ContentRootPath),
                 RequestPath = new PathString("")
             });
         }
