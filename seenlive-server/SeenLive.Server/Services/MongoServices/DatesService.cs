@@ -9,13 +9,9 @@ namespace SeenLive.Server.Services.MongoServices
     {
         private readonly IMongoCollection<DateEntry> _dateEntries;
 
-        public DatesService(ISeenLiveDatabaseSettings settings)
+        public DatesService(ISeenLiveDatabaseSettings settings, MongoDBContext context)
         {
-            // TODO encapsulate a single MongoClient somewhere for all services
-            var client = new MongoClient(settings?.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
-
-            _dateEntries = database.GetCollection<DateEntry>(settings.DatesCollectionName);
+            _dateEntries = context.Database.GetCollection<DateEntry>(settings.DatesCollectionName);
         }
 
         public IEnumerable<DateEntry> Get() =>

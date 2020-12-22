@@ -83,6 +83,7 @@ namespace SeenLive.Server
             services.Configure<SeenLiveDatabaseSettings>(Configuration.GetSection(nameof(SeenLiveDatabaseSettings)));
             services.AddSingleton<ISeenLiveDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<SeenLiveDatabaseSettings>>().Value);
+            services.AddSingleton<MongoDBContext>();
 
             // configure AutoMapper for mapping between data models and DTOs
             services.AddAutoMapper(typeof(Startup));
@@ -122,7 +123,7 @@ namespace SeenLive.Server
             app.UseMvc();
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(env?.ContentRootPath), // TODO use file provider from above?
+                FileProvider = new PhysicalFileProvider(env?.ContentRootPath),
                 RequestPath = new PathString("")
             });
         }
