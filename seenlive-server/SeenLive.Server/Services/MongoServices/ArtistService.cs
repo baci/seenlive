@@ -10,12 +10,9 @@ namespace SeenLive.Server.Services.MongoServices
     {
         private readonly IMongoCollection<ArtistEntry> _artistEntries;
 
-        public ArtistService(ISeenLiveDatabaseSettings settings)
+        public ArtistService(ISeenLiveDatabaseSettings settings, MongoDBContext context)
         {
-            var client = new MongoClient(settings?.ConnectionString);
-            var database = client.GetDatabase(settings.DatabaseName);
-
-            _artistEntries = database.GetCollection<ArtistEntry>(settings.ArtistsCollectionName);
+            _artistEntries = context.Database.GetCollection<ArtistEntry>(settings.ArtistsCollectionName);
         }
 
         public IEnumerable<ArtistEntry> Get() =>

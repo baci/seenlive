@@ -83,6 +83,7 @@ namespace SeenLive.Server
             services.Configure<SeenLiveDatabaseSettings>(Configuration.GetSection(nameof(SeenLiveDatabaseSettings)));
             services.AddSingleton<ISeenLiveDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<SeenLiveDatabaseSettings>>().Value);
+            services.AddSingleton<MongoDBContext>();
 
             // configure AutoMapper for mapping between data models and DTOs
             services.AddAutoMapper(typeof(Startup));
