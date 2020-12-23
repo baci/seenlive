@@ -1,7 +1,7 @@
-﻿using SeenLive.Server.Models;
+﻿using SeenLive.DataAccess.Models;
 using System.Collections.Generic;
 
-namespace SeenLive.Server.Services
+namespace SeenLive.DataAccess.Services
 {
     public interface IDatesService
     {

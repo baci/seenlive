@@ -1,7 +1,7 @@
 ﻿using MongoDB.Driver;
-using SeenLive.Server.Settings;
+using SeenLive.DataAccess.Settings;
 
-namespace SeenLive.Server.Services.MongoServices
+namespace SeenLive.DataAccess.Services.MongoServices
 {
     public class MongoDBContext
     {

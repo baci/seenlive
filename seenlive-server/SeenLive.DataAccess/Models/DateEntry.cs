@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace SeenLive.Server.Models
+namespace SeenLive.DataAccess.Models
 {
     public class DateEntry
     {

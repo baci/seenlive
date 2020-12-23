@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SeenLive.Server.Settings.MongoSettings
+namespace SeenLive.DataAccess.Settings.MongoSettings
 {
     public class SeenLiveDatabaseSettings : ISeenLiveDatabaseSettings
     {

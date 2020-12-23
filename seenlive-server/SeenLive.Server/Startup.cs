@@ -11,10 +11,10 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using SeenLive.Server.Services;
-using SeenLive.Server.Services.MongoServices;
-using SeenLive.Server.Settings;
-using SeenLive.Server.Settings.MongoSettings;
+using SeenLive.DataAccess.Services;
+using SeenLive.DataAccess.Services.MongoServices;
+using SeenLive.DataAccess.Settings;
+using SeenLive.DataAccess.Settings.MongoSettings;
 
 namespace SeenLive.Server
 {

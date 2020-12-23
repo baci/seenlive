@@ -1,9 +1,9 @@
 ﻿using MongoDB.Driver;
-using SeenLive.Server.Models;
-using SeenLive.Server.Settings;
+using SeenLive.DataAccess.Models;
+using SeenLive.DataAccess.Settings;
 using System.Collections.Generic;
 
-namespace SeenLive.Server.Services.MongoServices
+namespace SeenLive.DataAccess.Services.MongoServices
 {
     public class DatesService : IDatesService
     {

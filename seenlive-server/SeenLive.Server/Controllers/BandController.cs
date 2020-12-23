@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using SeenLive.Server.DTOs;
-using SeenLive.Server.Models;
-using SeenLive.Server.Services;
+using SeenLive.DataAccess.Models;
+using SeenLive.DataAccess.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
