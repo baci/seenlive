@@ -1,4 +1,4 @@
-﻿namespace SeenLive.Server.Settings
+﻿namespace SeenLive.DataAccess.Settings
 {
     public interface ISeenLiveDatabaseSettings
     {

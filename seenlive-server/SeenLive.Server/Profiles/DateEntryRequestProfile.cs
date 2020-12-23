@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using SeenLive.Server.DTOs;
-using SeenLive.Server.Models;
+using SeenLive.DataAccess.Models;
 
 namespace SeenLive.Server.Profiles
 {

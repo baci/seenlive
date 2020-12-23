@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SeenLive.Server.Models
+namespace SeenLive.DataAccess.Models
 {
     public class ArtistEntry
     {
