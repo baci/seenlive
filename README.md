@@ -14,12 +14,19 @@ The following tools are required to compile and run seenlive locally:
 * a MongoDB M0 Cluster running on some server
 
 ## Web Server
-* Compile seenlive-server\SeenLive.Server.sln
+* Execute from a terminal:
+```
+cd seenlive-server
+dotnet restore
+dotnet build --no-restore
+```
 * Set some user-specific environment variables for seenlive-db-server, seenlive-db-username and seenlive-db-password with your MongoDB credentials
 * Run SeenLive.Server project
 
 ## Web Client
-Assumes that the server is running. Execute from PowerShell:
-* cd seenlive
-* yarn install
-* yarn start
+Assumes that the server is running. Execute from a terminal:
+```
+cd seenlive
+yarn install
+yarn start
+```
