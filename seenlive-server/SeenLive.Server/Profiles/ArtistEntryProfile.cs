@@ -19,7 +19,7 @@ namespace SeenLive.Server.Profiles
         }
     }
 
-    public class ArtistEntryDateValueResolver : IValueResolver<ArtistEntry, ArtistResponseDTO, IList<DateEntryDTO>>
+    public sealed class ArtistEntryDateValueResolver : IValueResolver<ArtistEntry, ArtistResponseDTO, IList<DateEntryDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IDatesService _datesService;
