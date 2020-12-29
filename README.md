@@ -1,4 +1,4 @@
-![Node.js CI](https://github.com/baci/seenlive/workflows/Node.js%20CI/badge.svg?branch=master)
+![Frontend CI](https://github.com/baci/seenlive/workflows/Node.js%20CI/badge.svg?branch=master) ![Backend CI](https://github.com/baci/seenlive/workflows/.NET-Backend/badge.svg)
 
 # seenlive
 seenlive is single-page application that allows the user to track bands and concerts that they have been to. 
