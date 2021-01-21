@@ -47,8 +47,8 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
 
     const handleOk = () => {
         const newEntry: ArtistCreationRequestDTO = {
-            artistName: artistName,
-            dateEntryRequests: [{ date: date, location: location, remarks: remarks }] as DateEntryCreationRequestDTO[],
+            artistName,
+            dateEntryRequests: [{ date, location, remarks }] as DateEntryCreationRequestDTO[],
         };
         onConfirm(newEntry);
     };

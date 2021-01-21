@@ -8,10 +8,12 @@ import {
     Grid,
 } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { useDispatch } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
 import './../assets/scss/ArtistEntryComponent.scss';
 import DateEntryComponent from './DateEntryComponent';
+import { DeleteArtistEntryThunk, DeleteDateEntryThunk, GetArtistEntriesThunk } from '../store/ArtistsSlice';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,6 +37,17 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+function useArtistsSlice() {
+    const dispatch = useDispatch();
+
+    const deleteArtistEntry = (artistEntryId : string) =>
+        dispatch(DeleteArtistEntryThunk(artistEntryId)).then(_ => dispatch(GetArtistEntriesThunk()));
+    const deleteDateEntry = (artistId : string, dateId : string) =>
+        dispatch(DeleteDateEntryThunk({artistId, dateId})).then(_ => dispatch(GetArtistEntriesThunk()));
+
+    return {deleteArtistEntry, deleteDateEntry};
+}
+
 export interface ArtistEntryComponentProps {
     entry: ArtistEntry;
 
@@ -44,6 +57,7 @@ export interface ArtistEntryComponentProps {
 
 export default function ArtistEntryComponent(props: ArtistEntryComponentProps) {
     const classes = useStyles();
+    const {deleteArtistEntry, deleteDateEntry} = useArtistsSlice();
 
     const timesSeen = props.entry.dateEntries.length;
 
@@ -81,6 +95,9 @@ export default function ArtistEntryComponent(props: ArtistEntryComponentProps) {
                                         }}
                                         handleUserConfirmsEdit={(newEntry) => {
                                             /* todo(newEntry) */
+                                        }}
+                                        handleUserPressesDelete={(dateEntryId) => {
+                                            deleteDateEntry(props.entry.id, dateEntryId);
                                         }}
                                     />
                                 </Grid>
