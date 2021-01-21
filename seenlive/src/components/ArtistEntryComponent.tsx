@@ -80,7 +80,7 @@ export default function ArtistEntryComponent(props: ArtistEntryComponentProps) {
                     <EditIcon color="secondary" />
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <Grid container direction="column" justify="center" alignItems="stretch" spacing={3}>
+                    <Grid container direction="column" justify="center" alignItems="stretch" spacing={3} wrap={'nowrap'}>
                         {props.entry.dateEntries
                             .map((entry) => (
                                 <Grid item xs={12}>

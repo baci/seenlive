@@ -30,7 +30,7 @@ export default function DateEntryComponent(props: DateEntryComponentProps) {
                     <Typography variant="body1">{props.dateEntry.remarks}</Typography>
                 </Grid>
                 <Grid item className="item" xs={1}>
-                    <IconButton onClick={() => props.handleUserPressesDelete(props.dateEntry.id)}>
+                    <IconButton onClick={_ => props.handleUserPressesDelete(props.dateEntry.id)}>
                         <DeleteIcon fontSize="small" />
                     </IconButton>
                 </Grid>
