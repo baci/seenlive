@@ -56,6 +56,53 @@ namespace SeenLive.Server.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult DeleteDateEntry(DateEntryDeleteRequestDTO deletionRequest)
+        {
+            if (deletionRequest == null)
+                return BadRequest("Deletion request is missing");
+
+            try
+            {
+                ArtistEntry artist = _artistService.Get(deletionRequest.ArtistId);
+                bool removeResult = _datesService.Remove(deletionRequest.DateId);
+                artist.DateEntryIDs.Remove(deletionRequest.DateId);
+
+                if (artist.DateEntryIDs.Count > 0)
+                {                    
+                    _artistService.Update(deletionRequest.ArtistId, artist);
+
+                    return removeResult ? Ok() : NotFound() as ActionResult;
+                }
+
+                return DeleteArtistEntry(artist.Id);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }            
+        }
+
+        [HttpPost]
+        public ActionResult DeleteArtistEntry(string artistEntryId)
+        {
+            try
+            {
+                ArtistEntry artist = _artistService.Get(artistEntryId);
+                foreach(string dateId in artist.DateEntryIDs)
+                {
+                    _datesService.Remove(dateId);
+                }
+                bool removeResult = _artistService.Remove(artistEntryId);
+
+                return removeResult ? Ok() : NotFound() as ActionResult;
+            }
+            catch(Exception)
+            {
+                return BadRequest();
+            }            
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<ArtistResponseDTO>> GetArtistEntries()
         {

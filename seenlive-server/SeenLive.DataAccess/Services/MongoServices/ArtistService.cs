@@ -27,13 +27,13 @@ namespace SeenLive.DataAccess.Services.MongoServices
             return newEntry;
         }
 
-        public void Update(string id, ArtistEntry newEntry) =>
-            _artistEntries.ReplaceOne(entry => entry.Id == id, newEntry);
+        public bool Update(string id, ArtistEntry newEntry) =>
+            _artistEntries.ReplaceOne(entry => entry.Id == id, newEntry).IsAcknowledged;
 
-        public void Remove(ArtistEntry oldEntry) =>
-            _artistEntries.DeleteOne(entry => entry.Id == oldEntry.Id);
+        public bool Remove(ArtistEntry oldEntry) =>
+            _artistEntries.DeleteOne(entry => entry.Id == oldEntry.Id).IsAcknowledged;
 
-        public void Remove(string id) =>
-            _artistEntries.DeleteOne(entry => entry.Id == id);
+        public bool Remove(string id) =>
+            _artistEntries.DeleteOne(entry => entry.Id == id).IsAcknowledged;
     }
 }
