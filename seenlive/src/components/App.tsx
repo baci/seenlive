@@ -22,17 +22,20 @@ function useUISlice(){
     const dispatch = useDispatch();
 
     const openAddArtistPrompt = () => dispatch(UISlice.actions.OpenAddArtistPrompt());
+    const setArtistFilter = (filter : string) => dispatch(UISlice.actions.SetArtistFilter(filter));
 
-    return {openAddArtistPrompt};
+    return {openAddArtistPrompt, setArtistFilter};
 }
 
 export default function App() {
     const classes = useStyles();
-    const {openAddArtistPrompt} = useUISlice();
+    const {openAddArtistPrompt, setArtistFilter} = useUISlice();
 
     return (
         <div>
-            <TopMenuToolbar handleAddArtistClicked={() => openAddArtistPrompt() }/>
+            <TopMenuToolbar
+                handleAddArtistClicked={() => openAddArtistPrompt() }
+                handleArtistFilterChange={(filter => setArtistFilter(filter))}/>
 
             <Toolbar id="back-to-top-anchor" />
 

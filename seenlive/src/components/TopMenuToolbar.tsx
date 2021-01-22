@@ -85,6 +85,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export interface IProps {
     handleAddArtistClicked: () => void;
+    handleArtistFilterChange: (filter : string) => void;
 }
 
 export default function TopMenuToolbar(props: IProps) {
@@ -112,6 +113,7 @@ export default function TopMenuToolbar(props: IProps) {
                             input: classes.inputInput,
                         }}
                         inputProps={{ 'aria-label': 'search' }}
+                        onChange={(e) => props.handleArtistFilterChange(e.target.value)}
                     />
                 </div>
 

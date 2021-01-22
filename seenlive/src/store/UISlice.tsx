@@ -4,13 +4,15 @@ import { PROMPT_ADD_ARTIST, PROMPT_NONE } from '../actions/actions';
 export interface UIState{
     ActivePrompt : string;
     ExpandedArtistID : string;
+    ArtistFilter : string;
 }
 
 export const UISlice = createSlice({
     name: 'UISlice',
     initialState: {
         ActivePrompt: PROMPT_NONE,
-        ExpandedArtistID: ''
+        ExpandedArtistID: '',
+        ArtistFilter: ''
     } as UIState,
     reducers: {
         OpenAddArtistPrompt (state) {
@@ -25,6 +27,9 @@ export const UISlice = createSlice({
             } else {
                 return {...state, ExpandedArtistID: action.payload};
             }
+        },
+        SetArtistFilter(state, action: PayloadAction<string>) {
+            return {...state, ArtistFilter: action.payload};
         }
     }
 });
