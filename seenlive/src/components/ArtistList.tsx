@@ -4,7 +4,7 @@ import { Typography, Box, Divider } from '@material-ui/core';
 import './../assets/scss/App.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import ArtistEntryComponent from './ArtistEntryComponent';
-import { GetArtistEntriesThunk, selectSortedArtists, ArtistsState } from '../store/ArtistsSlice';
+import { GetArtistEntriesThunk, selectSortedArtists } from '../store/ArtistsSlice';
 import { UIState, UISlice, selectUIState } from '../store/UISlice';
 import ArtistEntry from '../entities/ArtistEntry';
 import { RootState } from '../reducers/RootReducer';
@@ -23,26 +23,20 @@ function useUISlice(){
     const dispatch = useDispatch();
 
     const uiState : UIState = useSelector((state : RootState) => selectUIState(state.UIState));
-    const artistsState : ArtistsState = useSelector((state : RootState) => selectSortedArtists(state.ArtistsState));
 
     const toggleArtistExpanded = (artistID : string) => dispatch(UISlice.actions.ToggleExpandArtistEntry(artistID));
 
-    return {uiState, artistsState, toggleArtistExpanded};
+    return {uiState, toggleArtistExpanded};
 }
 
 function ArtistList() {
 
     const {sortedArtists, getArtists} = useArtistsSlice();
-    const {uiState, artistsState, toggleArtistExpanded} = useUISlice();
+    const {uiState, toggleArtistExpanded} = useUISlice();
 
     useEffect(() => {
         getArtists();
     }, []);
-
-    // useEffect(() => {
-    //     if (artistsState.reloadArtists)
-    //         getArtists();
-    // }, [artistsState.reloadArtists]);
 
     return (
         <div className="app">

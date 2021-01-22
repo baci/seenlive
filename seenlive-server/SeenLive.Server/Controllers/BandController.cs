@@ -75,7 +75,9 @@ namespace SeenLive.Server.Controllers
                     return removeResult ? Ok() : NotFound() as ActionResult;
                 }
 
-                return DeleteArtistEntry(artist.Id);
+                return DeleteArtistEntry(artist.Id)
+                    ? Ok()
+                    : NotFound() as ActionResult;
             }
             catch (Exception)
             {
@@ -84,23 +86,31 @@ namespace SeenLive.Server.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteArtistEntry(string artistEntryId)
+        public ActionResult DeleteArtistEntry(ArtistDeleteRequestDTO request)
         {
+            if (request == null)
+                return BadRequest("Deletion request is missing");
+
             try
             {
-                ArtistEntry artist = _artistService.Get(artistEntryId);
-                foreach(string dateId in artist.DateEntryIDs)
-                {
-                    _datesService.Remove(dateId);
-                }
-                bool removeResult = _artistService.Remove(artistEntryId);
-
-                return removeResult ? Ok() : NotFound() as ActionResult;
+                return DeleteArtistEntry(request.ArtistEntryId) 
+                    ? Ok() 
+                    : NotFound() as ActionResult;
             }
             catch(Exception)
             {
                 return BadRequest();
             }            
+        }
+
+        private bool DeleteArtistEntry(string artistEntryId)
+        {
+            ArtistEntry artist = _artistService.Get(artistEntryId);
+            foreach (string dateId in artist.DateEntryIDs)
+            {
+                _datesService.Remove(dateId);
+            }
+            return _artistService.Remove(artistEntryId);
         }
 
         [HttpGet]

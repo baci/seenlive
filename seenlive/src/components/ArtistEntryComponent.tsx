@@ -6,11 +6,13 @@ import {
     ExpansionPanelSummary,
     ExpansionPanelDetails,
     Grid,
+    IconButton,
 } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import './../assets/scss/ArtistEntryComponent.scss';
 import DateEntryComponent from './DateEntryComponent';
 import { DeleteArtistEntryThunk, DeleteDateEntryThunk, GetArtistEntriesThunk } from '../store/ArtistsSlice';
@@ -32,6 +34,11 @@ const useStyles = makeStyles((theme: Theme) =>
             color: theme.palette.text.secondary,
             flexBasis: '150px',
             flexShrink: 1,
+            flexGrow: 0,
+        },
+        button: {
+            flexBasis: '50px',
+            flexShrink: 0,
             flexGrow: 0,
         },
     }),
@@ -77,7 +84,19 @@ export default function ArtistEntryComponent(props: ArtistEntryComponentProps) {
                     <Typography className={classes.heading}>{props.entry.artistName}</Typography>
                     <Typography className={classes.secondaryHeading}>Seen {timesSeen} times</Typography>
 
-                    <EditIcon color="secondary" />
+                    <IconButton size="small" className={classes.button} onClick={(event) => {
+                        event.stopPropagation();
+                        // deleteArtistEntry(props.entry.id);
+                    }} onFocus={(event) => event.stopPropagation()}>
+                        <EditIcon color="secondary" fontSize="small" />
+                    </IconButton>
+
+                    <IconButton size="small" className={classes.button} onClick={(event) => {
+                        event.stopPropagation();
+                        deleteArtistEntry(props.entry.id);
+                    }} onFocus={(event) => event.stopPropagation()}>
+                        <DeleteIcon color="secondary" fontSize="small" />
+                    </IconButton>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                     <Grid container direction="column" justify="center" alignItems="stretch" spacing={3} wrap={'nowrap'}>

@@ -23,7 +23,7 @@ export async function AddArtistEntry(entry : ArtistCreationRequestDTO){
 
 export async function DeleteArtistEntry(artistEntryId : string){
 
-    let response = await instance.post('Band/DeleteArtistEntry', artistEntryId, GetApiConfiguration());
+    let response = await instance.post('Band/DeleteArtistEntry', { artistEntryId }, GetApiConfiguration());
     return response.data;
 }
 
