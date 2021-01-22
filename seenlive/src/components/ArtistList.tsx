@@ -36,7 +36,7 @@ function ArtistList() {
 
     useEffect(() => {
         getArtists();
-    });
+    }, []);
 
     return (
         <div className="app">
@@ -55,7 +55,7 @@ function ArtistList() {
                     <Divider />
                 </p>
                 <div className="footer">
-                    <Typography variant="caption">Copyright 2020 Till Riemer.</Typography>
+                    <Typography variant="caption">Copyright 2021 Till Riemer.</Typography>
                 </div>
             </Box>
         </div>

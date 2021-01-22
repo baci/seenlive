@@ -1,7 +1,8 @@
 import { createSlice, createSelector, createAsyncThunk } from '@reduxjs/toolkit';
 import ArtistEntry from '../entities/ArtistEntry';
-import { AddArtistEntry, GetArtistEntries } from '../api/BandApi';
+import { AddArtistEntry, DeleteArtistEntry, DeleteDateEntry, GetArtistEntries } from '../api/BandApi';
 import ArtistCreationRequestDTO from '../entities/ArtistCreationRequestDTO';
+import DateEntryDeleteRequestDTO from '../entities/DateEntryDeleteRequestDTO';
 
 export interface ArtistsState{
     nextArtistId : number;
@@ -18,6 +19,22 @@ export const AddArtistEntryThunk = createAsyncThunk(
     async (newEntry: ArtistCreationRequestDTO) => {
         const newArtistEntries = await AddArtistEntry(newEntry);
         return (newArtistEntries as ArtistEntry[]);
+    }
+);
+
+export const DeleteArtistEntryThunk = createAsyncThunk(
+    'api/Band/DeleteArtistEntry',
+    async (artistEntryId: string) => {
+        const result = await DeleteArtistEntry(artistEntryId);
+        return result;
+    }
+);
+
+export const DeleteDateEntryThunk = createAsyncThunk(
+    'api/Band/DeleteDateEntry',
+    async (request: DateEntryDeleteRequestDTO) => {
+        const result = await DeleteDateEntry(request);
+        return result;
     }
 );
 

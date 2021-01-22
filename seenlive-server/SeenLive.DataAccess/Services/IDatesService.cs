@@ -11,10 +11,10 @@ namespace SeenLive.DataAccess.Services
 
         public DateEntry Create(DateEntry newEntry);
 
-        public void Update(string id, DateEntry newEntry);
+        public bool Update(string id, DateEntry newEntry);
 
-        public void Remove(DateEntry oldEntry);
+        public bool Remove(DateEntry oldEntry);
 
-        public void Remove(string id);
+        public bool Remove(string id);
     }
 }

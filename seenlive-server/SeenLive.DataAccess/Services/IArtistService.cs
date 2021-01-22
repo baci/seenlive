@@ -11,10 +11,10 @@ namespace SeenLive.DataAccess.Services
 
         public ArtistEntry Create(ArtistEntry newEntry);
 
-        public void Update(string id, ArtistEntry newEntry);
+        public bool Update(string id, ArtistEntry newEntry);
 
-        public void Remove(ArtistEntry oldEntry);
+        public bool Remove(ArtistEntry oldEntry);
 
-        public void Remove(string id);
+        public bool Remove(string id);
     }
 }
