@@ -38,11 +38,18 @@ function ArtistList() {
         getArtists();
     }, []);
 
+    const filterByArtistName = (e : ArtistEntry) =>
+        uiState.ArtistFilter === '' ||
+        (uiState.ArtistFilter.includes(' ') && e.artistName.startsWith(uiState.ArtistFilter)) ||
+        e.artistName.split(' ').find((w) => w.startsWith(uiState.ArtistFilter)) !== undefined;
+
     return (
         <div className="app">
             <Box>
                 <div className="entries">
-                    {sortedArtists.map((e) => (
+                    {sortedArtists
+                        .filter(filterByArtistName)
+                        .map((e) => (
                             <ArtistEntryComponent
                                 entry={e}
                                 expanded={uiState.ExpandedArtistID === e.id}
