@@ -53,7 +53,7 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
     const [remarks, setRemarks] = React.useState('');
 
     const handleOk = () => {
-        const dateString: string = (date ? date : new Date()).toDateString();
+        const dateString: string = (date ? date : new Date()).toLocaleDateString();
 
         const newEntry: ArtistCreationRequestDTO = {
             artistName,
