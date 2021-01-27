@@ -1,9 +1,16 @@
 import * as React from 'react';
+import 'date-fns';
 import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Dialog from '@material-ui/core/Dialog';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+  DateTimePicker,
+} from '@material-ui/pickers';
 import { TextField } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { UIState, UISlice, selectUIState } from '../store/UISlice';
@@ -41,14 +48,16 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
     const { ...other } = props;
 
     const [artistName, setArtistName] = React.useState('');
-    const [date, setDate] = React.useState('');
+    const [date, setDate] = React.useState(null as Date | null);
     const [location, setLocation] = React.useState('');
     const [remarks, setRemarks] = React.useState('');
 
     const handleOk = () => {
+        const dateString: string = (date ? date : new Date()).toLocaleDateString();
+
         const newEntry: ArtistCreationRequestDTO = {
             artistName,
-            dateEntryRequests: [{ date, location, remarks }] as DateEntryCreationRequestDTO[],
+            dateEntryRequests: [{ date: dateString, location, remarks }] as DateEntryCreationRequestDTO[],
         };
         onConfirm(newEntry);
     };
@@ -57,8 +66,8 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
         setArtistName((event.target as HTMLInputElement).value);
     };
 
-    const handleChangeDate = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setDate((event.target as HTMLInputElement).value);
+    const handleChangeDate = (date: Date | null) => {
+        setDate(date ? date : new Date());
     };
 
     const handleChangeLocation = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,13 +97,25 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
                     onChange={handleChangeArtist}
                 />
                 <p />
-                <TextField
-                    required
-                    id="show-date"
-                    label="Date of Show"
-                    variant="outlined"
-                    onChange={handleChangeDate}
-                />
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <KeyboardDatePicker
+                        disableToolbar
+                        disableFuture
+                        required
+                        autoOk
+                        variant="inline"
+                        inputVariant="outlined"
+                        format="dd.MM.yyyy"
+                        margin="normal"
+                        id="concert-date"
+                        label="Date"
+                        value={date}
+                        onChange={handleChangeDate}
+                        KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                        }}
+                    />
+                </MuiPickersUtilsProvider>
                 <p />
                 <TextField id="show-location" label="Location" variant="outlined" onChange={handleChangeLocation} />
                 <p />
