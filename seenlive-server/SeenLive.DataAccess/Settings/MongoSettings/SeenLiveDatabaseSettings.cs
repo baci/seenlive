@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SeenLive.Core.Abstractions.Settings;
+using System;
 
 namespace SeenLive.DataAccess.Settings.MongoSettings
 {

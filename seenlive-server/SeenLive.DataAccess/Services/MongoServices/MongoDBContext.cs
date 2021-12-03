@@ -1,5 +1,5 @@
 ﻿using MongoDB.Driver;
-using SeenLive.DataAccess.Settings;
+using SeenLive.DataAccess.Settings.MongoSettings;
 
 namespace SeenLive.DataAccess.Services.MongoServices
 {
@@ -7,7 +7,7 @@ namespace SeenLive.DataAccess.Services.MongoServices
     {
         public IMongoDatabase Database { get; }
 
-        public MongoDBContext(ISeenLiveDatabaseSettings settings)
+        public MongoDBContext(SeenLiveDatabaseSettings settings)
         {
             MongoClient client = new MongoClient(settings?.ConnectionString);
             Database = client.GetDatabase(settings.DatabaseName);

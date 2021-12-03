@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using SeenLive.Server.DTOs;
-using SeenLive.DataAccess.Models;
+using SeenLive.Core.Abstractions.Models;
+using SeenLive.Core.DTOs;
 
-namespace SeenLive.Server.Profiles
+namespace SeenLive.Core.Profiles
 {
     public class DateEntryRequestProfile : Profile
     {
         public DateEntryRequestProfile()
         {
-            CreateMap<DateEntryCreationRequestDTO, DateEntry>()
+            CreateMap<DateEntryCreationRequestDTO, IDateEntry>()
                 .ForMember(entry => entry.Id, config => config.MapFrom(_ => string.Empty));
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace SeenLive.Server.DTOs
+﻿namespace SeenLive.Core.DTOs
 {
     public class DateEntryDeleteRequestDTO
     {

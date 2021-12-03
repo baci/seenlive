@@ -1,17 +1,17 @@
 ﻿using AutoMapper;
-using SeenLive.Server.DTOs;
-using SeenLive.DataAccess.Models;
-using SeenLive.DataAccess.Services;
+using SeenLive.Core.Abstractions.Models;
+using SeenLive.Core.DTOs;
+using SeenLive.Core.Services;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SeenLive.Server.Profiles
+namespace SeenLive.Core.Profiles
 {
     public class ArtistEntryProfile : Profile
     {
         public ArtistEntryProfile()
         {
-            CreateMap<ArtistEntry, ArtistResponseDTO>()
+            CreateMap<IArtistEntry, ArtistResponseDTO>()
                 .ForMember(dest => dest.ArtistName, config => config.MapFrom(src => src.ArtistName))
                 .ForMember(dest => dest.DateEntries, config => config.MapFrom<ArtistEntryDateValueResolver>())
                 //.ReverseMap()
@@ -19,7 +19,7 @@ namespace SeenLive.Server.Profiles
         }
     }
 
-    public sealed class ArtistEntryDateValueResolver : IValueResolver<ArtistEntry, ArtistResponseDTO, IList<DateEntryDTO>>
+    public sealed class ArtistEntryDateValueResolver : IValueResolver<IArtistEntry, ArtistResponseDTO, IList<DateEntryDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IDatesService _datesService;
@@ -30,8 +30,8 @@ namespace SeenLive.Server.Profiles
             _datesService = datesService;
         }
 
-        IList<DateEntryDTO> IValueResolver<ArtistEntry, ArtistResponseDTO, IList<DateEntryDTO>>.Resolve(
-            ArtistEntry artistEntry, ArtistResponseDTO destination, IList<DateEntryDTO> destMember, ResolutionContext context
+        IList<DateEntryDTO> IValueResolver<IArtistEntry, ArtistResponseDTO, IList<DateEntryDTO>>.Resolve(
+            IArtistEntry artistEntry, ArtistResponseDTO destination, IList<DateEntryDTO> destMember, ResolutionContext context
             )
         {
             return artistEntry.DateEntryIDs.Select(id => _mapper.Map<DateEntryDTO>(_datesService.Get(id))).ToList();

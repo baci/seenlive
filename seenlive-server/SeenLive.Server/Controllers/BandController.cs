@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using SeenLive.Server.DTOs;
-using SeenLive.DataAccess.Models;
-using SeenLive.DataAccess.Services;
+using SeenLive.Core.Abstractions.Models;
+using SeenLive.Core.DTOs;
+using SeenLive.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,13 +34,14 @@ namespace SeenLive.Server.Controllers
             {
                 // TODO: extract this into a business logic / CQRS layer
                 
-                ArtistEntry artistEntry = _artistService.Get().SingleOrDefault(entry => entry.ArtistName == artistRequest.ArtistName);
+                IArtistEntry artistEntry = _artistService.Get().SingleOrDefault(entry => entry.ArtistName == artistRequest.ArtistName);
                 IEnumerable<string> dateEntryIDs = CreateDateEntries(artistRequest.DateEntryRequests);
 
                 if (artistEntry == null)
                 {
-                    artistEntry = new ArtistEntry(string.Empty, artistRequest.ArtistName, dateEntryIDs);
-                    _artistService.Create(artistEntry);
+                    // TODO geradeziehen
+                    //artistEntry = new ArtistEntry(string.Empty, artistRequest.ArtistName, dateEntryIDs);
+                    //_artistService.Create(artistEntry);
                 }
                 else
                 {
@@ -64,7 +65,7 @@ namespace SeenLive.Server.Controllers
 
             try
             {
-                ArtistEntry artist = _artistService.Get(deletionRequest.ArtistId);
+                IArtistEntry artist = _artistService.Get(deletionRequest.ArtistId);
                 bool removeResult = _datesService.Remove(deletionRequest.DateId);
                 artist.DateEntryIDs.Remove(deletionRequest.DateId);
 
@@ -105,7 +106,7 @@ namespace SeenLive.Server.Controllers
 
         private bool DeleteArtistEntry(string artistEntryId)
         {
-            ArtistEntry artist = _artistService.Get(artistEntryId);
+            IArtistEntry artist = _artistService.Get(artistEntryId);
             foreach (string dateId in artist.DateEntryIDs)
             {
                 _datesService.Remove(dateId);
@@ -130,7 +131,7 @@ namespace SeenLive.Server.Controllers
         {
             return requests.Select(request =>
             {
-                DateEntry newDateEntry = _datesService.Create(_mapper.Map<DateEntry>(request));
+                IDateEntry newDateEntry = _datesService.Create(_mapper.Map<IDateEntry>(request));
                 return newDateEntry?.Id;
             });
         }

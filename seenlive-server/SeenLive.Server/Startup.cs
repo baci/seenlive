@@ -1,6 +1,9 @@
 using System;
 using System.Linq;
-using AutoMapper;
+using System.Reflection;
+using System.Web.Mvc;
+using Autofac;
+using Autofac.Integration.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -11,9 +14,8 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using SeenLive.DataAccess.Services;
-using SeenLive.DataAccess.Services.MongoServices;
-using SeenLive.DataAccess.Settings;
+using SeenLive.Core.Abstractions.Settings;
+using SeenLive.DataAccess;
 using SeenLive.DataAccess.Settings.MongoSettings;
 
 namespace SeenLive.Server
@@ -83,13 +85,9 @@ namespace SeenLive.Server
             services.Configure<SeenLiveDatabaseSettings>(Configuration.GetSection(nameof(SeenLiveDatabaseSettings)));
             services.AddSingleton<ISeenLiveDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<SeenLiveDatabaseSettings>>().Value);
-            services.AddSingleton<MongoDBContext>();
-
+            
             // configure AutoMapper for mapping between data models and DTOs
-            services.AddAutoMapper(typeof(Startup));
-
-            services.AddScoped<IArtistService, ArtistService>();
-            services.AddScoped<IDatesService, DatesService>();            
+            services.AddAutoMapper(typeof(Startup));         
 
             services.AddControllers();
         }
@@ -107,6 +105,9 @@ namespace SeenLive.Server
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            SetupAutofacContainer();
+
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
@@ -126,6 +127,19 @@ namespace SeenLive.Server
                 FileProvider = new PhysicalFileProvider(env?.ContentRootPath),
                 RequestPath = new PathString("")
             });
+        }
+
+        private static void SetupAutofacContainer()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterControllers(Assembly.GetExecutingAssembly());
+            builder.RegisterModule(new DataAccessModule());
+
+            var container = builder.Build();
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+
+            //app.UseAutofacMiddleware(container);
+            //app.UseAutofacMvc();
         }
     }
 }
