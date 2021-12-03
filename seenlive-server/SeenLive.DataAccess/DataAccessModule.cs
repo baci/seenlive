@@ -9,6 +9,8 @@ namespace SeenLive.DataAccess
     {
         protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             // TODO db services singleinstance or per dependency?
             builder.RegisterType<ArtistService<ArtistEntry>>().As<IArtistService>().SingleInstance();
             builder.RegisterType<DatesService<DateEntry>>().As<IDatesService>().SingleInstance();

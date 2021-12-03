@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SeenLive.Core\SeenLive.Core.csproj" />
     <ProjectReference Include="..\SeenLive.DataAccess\SeenLive.DataAccess.csproj" />
+    <ProjectReference Include="..\SeenLive.Web.Handler\SeenLive.Web.Handler.csproj" />
   </ItemGroup>
 
 

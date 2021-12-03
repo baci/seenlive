@@ -17,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using SeenLive.Core.Abstractions.Settings;
 using SeenLive.DataAccess;
 using SeenLive.DataAccess.Settings.MongoSettings;
+using SeenLive.Web.Handler;
 
 namespace SeenLive.Server
 {
@@ -36,11 +37,13 @@ namespace SeenLive.Server
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
             services.AddSwaggerGen(options =>
                 {
-                    options.SwaggerDoc("seenlive-v1",
+                    const string versionString = "v1";
+
+                    options.SwaggerDoc("seenlive-" + versionString,
                         new OpenApiInfo
                         {
                             Title = "SeenLive API", 
-                            Version = "v1", 
+                            Version = versionString, 
                             Contact = new OpenApiContact{ Name="Till Riemer", Email="till.riemer@gmail.com" }
                         }
                     );
@@ -134,6 +137,7 @@ namespace SeenLive.Server
             var builder = new ContainerBuilder();
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
             builder.RegisterModule(new DataAccessModule());
+            builder.RegisterModule(new WebHandlerModule());
 
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
