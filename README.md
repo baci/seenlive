@@ -1,4 +1,4 @@
-![Frontend CI](https://github.com/baci/seenlive/workflows/Node.js%20CI/badge.svg?branch=master) ![Backend CI](https://github.com/baci/seenlive/workflows/.NET-Backend/badge.svg)
+![Frontend CI](https://github.com/baci/seenlive/workflows/Node.js%20CI/badge.svg?branch=master) ![Backend CI](https://github.com/baci/seenlive/workflows/.NET-Backend/badge.svg) [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
 
 # seenlive
 seenlive is single-page application that allows the user to track bands and concerts that they have been to. 
@@ -31,7 +31,6 @@ yarn install
 yarn start
 ```
 
-Shield: [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
 
 This work is licensed under a
 [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
