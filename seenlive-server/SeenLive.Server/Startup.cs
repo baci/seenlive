@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Autofac.Integration.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,6 +30,8 @@ namespace SeenLive.Web
         }
 
         public IConfiguration Configuration { get; }
+        
+        public ILifetimeScope AutofacContainer { get; private set; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -77,9 +80,9 @@ namespace SeenLive.Web
             );
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
-                options.AddPolicy("AllowAnyMethod", options => options.AllowAnyMethod());
-                options.AddPolicy("AllowHeader", options => options.AllowAnyHeader());
+                options.AddPolicy("AllowOrigin", builder => builder.AllowAnyOrigin());
+                options.AddPolicy("AllowAnyMethod", builder => builder.AllowAnyMethod());
+                options.AddPolicy("AllowHeader", builder => builder.AllowAnyHeader());
             });
 
             // TODO add bearer authentication
@@ -98,6 +101,8 @@ namespace SeenLive.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            this.AutofacContainer = app.ApplicationServices.GetAutofacRoot();
+            
             app.UseCors(option =>
             {
                 option.AllowAnyOrigin();
@@ -108,8 +113,6 @@ namespace SeenLive.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            SetupAutofacContainer();
 
             app.UseHttpsRedirection();
             app.UseRouting();
@@ -132,18 +135,11 @@ namespace SeenLive.Web
             });
         }
 
-        private static void SetupAutofacContainer()
+        public void ConfigureContainer(ContainerBuilder builder)
         {
-            var builder = new ContainerBuilder();
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
             builder.RegisterModule(new DataAccessModule());
             builder.RegisterModule(new WebHandlerModule());
-
-            var container = builder.Build();
-            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
-
-            //app.UseAutofacMiddleware(container);
-            //app.UseAutofacMvc();
         }
     }
 }
