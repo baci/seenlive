@@ -1,7 +1,7 @@
-﻿using SeenLive.Core.Abstractions.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using SeenLive.Core.Abstractions.Models;
 
-namespace SeenLive.Core.Services
+namespace SeenLive.Core.Abstractions
 {
     public interface IDatesService
     {

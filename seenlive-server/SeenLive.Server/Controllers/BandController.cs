@@ -1,13 +1,13 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using SeenLive.Core.Abstractions.Models;
-using SeenLive.Core.DTOs;
-using SeenLive.Core.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using SeenLive.Core.Abstractions;
+using SeenLive.Core.Abstractions.Models;
+using SeenLive.Core.DTOs;
 
-namespace SeenLive.Server.Controllers
+namespace SeenLive.Web.Controllers
 {  
     [Route("api/[controller]/[action]")]
     [ApiController]

@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using SeenLive.Core.Services;
+using SeenLive.Core.Abstractions;
 using SeenLive.DataAccess.Models;
 using SeenLive.DataAccess.Services.MongoServices;
 

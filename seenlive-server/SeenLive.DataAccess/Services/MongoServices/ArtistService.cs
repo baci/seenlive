@@ -1,9 +1,9 @@
 ﻿using MongoDB.Driver;
 using SeenLive.Core.Abstractions.Models;
 using SeenLive.Core.Abstractions.Settings;
-using SeenLive.Core.Services;
 using System.Collections.Generic;
 using System.Linq;
+using SeenLive.Core.Abstractions;
 
 namespace SeenLive.DataAccess.Services.MongoServices
 {

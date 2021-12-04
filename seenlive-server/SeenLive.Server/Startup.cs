@@ -19,7 +19,7 @@ using SeenLive.DataAccess;
 using SeenLive.DataAccess.Settings.MongoSettings;
 using SeenLive.Web.Handler;
 
-namespace SeenLive.Server
+namespace SeenLive.Web
 {
     public class Startup
     {

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using SeenLive.Core.Abstractions.Models;
 using SeenLive.Core.DTOs;
-using SeenLive.Core.Services;
 using System.Collections.Generic;
 using System.Linq;
+using SeenLive.Core.Abstractions;
 
 namespace SeenLive.Core.Profiles
 {
