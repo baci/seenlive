@@ -38,6 +38,7 @@ namespace SeenLive.Web
             services
                 .AddMvc(options => options.EnableEndpointRouting = false)
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
+            
             services.AddSwaggerGen(options =>
                 {
                     const string versionString = "v1";
@@ -87,11 +88,6 @@ namespace SeenLive.Web
 
             // TODO add bearer authentication
 
-            // database setup with appsettings configuration
-            services.Configure<SeenLiveDatabaseSettings>(Configuration.GetSection(nameof(SeenLiveDatabaseSettings)));
-            services.AddSingleton<ISeenLiveDatabaseSettings>(sp =>
-                sp.GetRequiredService<IOptions<SeenLiveDatabaseSettings>>().Value);
-            
             // configure AutoMapper for mapping between data models and DTOs
             services.AddAutoMapper(typeof(Startup));         
 
@@ -101,7 +97,7 @@ namespace SeenLive.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            this.AutofacContainer = app.ApplicationServices.GetAutofacRoot();
+            AutofacContainer = app.ApplicationServices.GetAutofacRoot();
             
             app.UseCors(option =>
             {
@@ -137,8 +133,11 @@ namespace SeenLive.Web
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
+            var databaseSettings =
+                Configuration.GetSection("SeenLiveDatabaseSettings").Get<SeenLiveDatabaseSettings>();
+            
             builder.RegisterControllers(Assembly.GetExecutingAssembly());
-            builder.RegisterModule(new DataAccessModule());
+            builder.RegisterModule(new DataAccessModule(databaseSettings));
             builder.RegisterModule(new WebHandlerModule());
         }
     }

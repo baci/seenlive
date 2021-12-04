@@ -10,7 +10,7 @@ namespace SeenLive.DataAccess.Services.MongoServices
         public MongoDBContext(ISeenLiveDatabaseSettings settings)
         {
             MongoClient client = new MongoClient(settings?.ConnectionString);
-            Database = client.GetDatabase(settings.DatabaseName);
+            Database = client.GetDatabase(settings?.DatabaseName);
         }
     }
 }
