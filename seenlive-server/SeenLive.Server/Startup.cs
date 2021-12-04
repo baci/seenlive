@@ -86,10 +86,7 @@ namespace SeenLive.Web
                 options.AddPolicy("AllowHeader", builder => builder.AllowAnyHeader());
             });
 
-            // TODO add bearer authentication
-
-            // configure AutoMapper for mapping between data models and DTOs
-            services.AddAutoMapper(typeof(Startup));         
+            // TODO add bearer authentication    
 
             services.AddControllers();
         }
