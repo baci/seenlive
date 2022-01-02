@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SeenLive.Core.Abstractions;
-using SeenLive.Core.Abstractions.Models;
 using SeenLive.Core.DTOs;
 using SeenLive.Web.Handler.Bands;
 
 namespace SeenLive.Web.Controllers
-{  
+{
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class BandController : ControllerBase
     {
-        private readonly IArtistService _artistService;
-        private readonly IDatesService _datesService;
         private readonly IMediator _mediator;
 
         public BandController(IArtistService artistService, IDatesService datesService, IMediator mediator)
@@ -91,11 +87,13 @@ namespace SeenLive.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ArtistResponseDTO>> GetArtistEntries()
+        public async Task<ActionResult<IEnumerable<ArtistResponseDTO>>> GetArtistEntries()
         {
             try
             {
-                return Ok(_artistService.Get().Adapt<IEnumerable<ArtistResponseDTO>>());
+                IEnumerable<ArtistResponseDTO> ret = await _mediator.Send(new GetArtistEntriesRequest());
+                
+                return Ok(ret);
             }
             catch (Exception)
             {
