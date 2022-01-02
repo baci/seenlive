@@ -9,7 +9,7 @@ namespace SeenLive.Core.Abstractions
 
         public IArtistEntry Get(string id);
 
-        public IArtistEntry Create(IArtistEntry newEntry);
+        public IArtistEntry Create(string id, string artistName, IEnumerable<string> dateEntryIds);
 
         public bool Update(string id, IArtistEntry newEntry);
 

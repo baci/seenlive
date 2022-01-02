@@ -3,6 +3,7 @@ using SeenLive.Core.Abstractions.Models;
 using SeenLive.Core.Abstractions.Settings;
 using System.Collections.Generic;
 using SeenLive.Core.Abstractions;
+using SeenLive.DataAccess.Models;
 
 namespace SeenLive.DataAccess.Services.MongoServices
 {
@@ -21,12 +22,6 @@ namespace SeenLive.DataAccess.Services.MongoServices
         public IDateEntry Get(string id) =>
             _dateEntries.Find(entry => entry.Id == id).FirstOrDefault();
 
-        public IDateEntry Create(IDateEntry newEntry)
-        {
-            _dateEntries.InsertOne((T)newEntry);
-            return newEntry;
-        }
-
         public bool Update(string id, IDateEntry newEntry) =>
             _dateEntries.ReplaceOne(entry => entry.Id == id, (T)newEntry).IsAcknowledged;
 
@@ -35,5 +30,13 @@ namespace SeenLive.DataAccess.Services.MongoServices
 
         public bool Remove(string id) =>
             _dateEntries.DeleteOne(entry => entry.Id == id).IsAcknowledged;
+
+        public IDateEntry Create(string date, string location, string remarks)
+        {
+            IDateEntry newEntry = new DateEntry() { Date = date, Location = location, Remarks = remarks };
+            _dateEntries.InsertOne((T)newEntry);
+            
+            return newEntry;
+        }
     }
 }

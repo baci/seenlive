@@ -36,9 +36,7 @@ namespace SeenLive.Web.Handler.Bands
 
                 if (artistEntry == null)
                 {
-                    // TODO geradeziehen
-                    //artistEntry = new ArtistEntry(string.Empty, request.ArtistRequest.ArtistName, dateEntryIDs);
-                    //_artistService.Create(artistEntry);
+                    artistEntry = _artistService.Create(string.Empty, request.ArtistRequest.ArtistName, dateEntryIDs);
                 }
                 else
                 {
@@ -51,12 +49,11 @@ namespace SeenLive.Web.Handler.Bands
             
             private IEnumerable<string> CreateDateEntries(IEnumerable<DateEntryCreationRequestDTO> requests)
             {
-                throw new NotImplementedException();
-                // return requests.Select(request =>
-                // {
-                //     IDateEntry newDateEntry = _datesService.Create(new DateEntry(request)); // TODO geradeziehen
-                //     return newDateEntry?.Id;
-                // });
+                return requests.Select(request =>
+                {
+                    IDateEntry newDateEntry = _datesService.Create(request.Date, request.Location, request.Remarks);
+                    return newDateEntry?.Id;
+                });
             }
         }
     }

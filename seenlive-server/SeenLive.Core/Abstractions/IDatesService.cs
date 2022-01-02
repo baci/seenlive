@@ -9,12 +9,12 @@ namespace SeenLive.Core.Abstractions
 
         public IDateEntry Get(string id);
 
-        public IDateEntry Create(IDateEntry newEntry);
-
         public bool Update(string id, IDateEntry newEntry);
 
         public bool Remove(IDateEntry oldEntry);
 
         public bool Remove(string id);
+
+        IDateEntry Create(string date, string location, string remarks);
     }
 }
