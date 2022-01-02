@@ -1,6 +1,6 @@
 ﻿namespace SeenLive.Core.DTOs
 {
-    public class DateEntryDTO
+    public record DateEntryDTO
     {
         public string Id { get; set; }
         public string Date { get; set; }

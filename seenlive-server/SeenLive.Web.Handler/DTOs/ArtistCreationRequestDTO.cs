@@ -2,7 +2,7 @@
 
 namespace SeenLive.Core.DTOs
 {
-    public class ArtistCreationRequestDTO
+    public record ArtistCreationRequestDTO
     {
         public string ArtistName { get; set; }
 
