@@ -12,13 +12,13 @@ using SeenLive.Core.DTOs;
 
 namespace SeenLive.Web.Handler.Bands
 {
-    public class AddArtistEntryRequest : IRequest<IEnumerable<ArtistResponseDTO>>
+    public class AddArtistEntryRequest : IRequest
     {
         [Required]
         public ArtistCreationRequestDTO ArtistRequest { get; set; }
         
         
-        public class Handler : IRequestHandler<AddArtistEntryRequest, IEnumerable<ArtistResponseDTO>>
+        public class Handler : IRequestHandler<AddArtistEntryRequest>
         {
             private readonly IArtistService _artistService;
             private readonly IDatesService _datesService;
@@ -29,7 +29,7 @@ namespace SeenLive.Web.Handler.Bands
                 _datesService = datesService;
             }
 
-            public Task<IEnumerable<ArtistResponseDTO>> Handle(AddArtistEntryRequest request, CancellationToken cancellationToken)
+            public Task<Unit> Handle(AddArtistEntryRequest request, CancellationToken cancellationToken)
             {
                 IArtistEntry artistEntry = _artistService.Get().SingleOrDefault(entry => entry.ArtistName == request.ArtistRequest.ArtistName);
                 IEnumerable<string> dateEntryIDs = CreateDateEntries(request.ArtistRequest.DateEntryRequests);
@@ -44,7 +44,7 @@ namespace SeenLive.Web.Handler.Bands
                     _artistService.Update(artistEntry.Id, artistEntry);
                 }
 
-                return Task.FromResult(_artistService.Get().Select(entry => entry.Adapt<ArtistResponseDTO>()));
+                return Task.FromResult(Unit.Value);
             }
             
             private IEnumerable<string> CreateDateEntries(IEnumerable<DateEntryCreationRequestDTO> requests)

@@ -30,8 +30,10 @@ namespace SeenLive.Web.Controllers
 
             try
             {
-                IEnumerable<ArtistResponseDTO> result = await _mediator.Send(new AddArtistEntryRequest { ArtistRequest = artistRequest });
-                
+                await _mediator.Send(new AddArtistEntryRequest { ArtistRequest = artistRequest });
+
+                IEnumerable<ArtistResponseDTO> result = await _mediator.Send(new GetArtistEntriesRequest());
+
                 return Ok(result);
             }
             catch (Exception)
