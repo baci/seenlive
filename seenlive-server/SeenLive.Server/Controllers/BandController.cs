@@ -15,10 +15,8 @@ namespace SeenLive.Web.Controllers
     {
         private readonly IMediator _mediator;
 
-        public BandController(IArtistService artistService, IDatesService datesService, IMediator mediator)
+        public BandController(IMediator mediator)
         {
-            _artistService = artistService;
-            _datesService = datesService;
             _mediator = mediator;
         }
 
