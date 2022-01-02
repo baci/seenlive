@@ -12,7 +12,7 @@ namespace SeenLive.Web.Handler.Bands
 {
     public class GetArtistEntriesRequest : IRequest<IEnumerable<ArtistResponseDTO>>
     {
-        public class Handler : IRequestHandler<AddArtistEntryRequest, IEnumerable<ArtistResponseDTO>>
+        public class Handler : IRequestHandler<GetArtistEntriesRequest, IEnumerable<ArtistResponseDTO>>
         {
             private readonly IArtistService _artistService;
             private readonly IDatesService _datesService;
@@ -23,7 +23,7 @@ namespace SeenLive.Web.Handler.Bands
                 _datesService = datesService;
             }
 
-            public Task<IEnumerable<ArtistResponseDTO>> Handle(AddArtistEntryRequest request, CancellationToken cancellationToken)
+            public Task<IEnumerable<ArtistResponseDTO>> Handle(GetArtistEntriesRequest request, CancellationToken cancellationToken)
             {
                 IEnumerable<IArtistEntry> artistEntries = _artistService.Get();
 
