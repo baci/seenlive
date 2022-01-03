@@ -1,54 +1,40 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using SeenLive.Server.DTOs;
-using SeenLive.DataAccess.Models;
-using SeenLive.DataAccess.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using SeenLive.Core.Abstractions;
+using SeenLive.Core.DTOs;
+using SeenLive.Web.Handler.Bands;
 
-namespace SeenLive.Server.Controllers
-{  
+namespace SeenLive.Web.Controllers
+{
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class BandController : ControllerBase
     {
-        private readonly IMapper _mapper;
-        private readonly IArtistService _artistService;
-        private readonly IDatesService _datesService;
+        private readonly IMediator _mediator;
 
-        public BandController(IMapper mapper, IArtistService artistService, IDatesService datesService)
+        public BandController(IMediator mediator)
         {
-            _mapper = mapper;
-            _artistService = artistService;
-            _datesService = datesService;
+            _mediator = mediator;
         }
 
         [HttpPost]
-        public ActionResult<IEnumerable<ArtistResponseDTO>> AddArtistEntry(ArtistCreationRequestDTO artistRequest)
+        public async Task <ActionResult<IEnumerable<ArtistResponseDTO>>> AddArtistEntry(ArtistCreationRequestDTO artistRequest)
         {
             if (artistRequest == null)
+            {
                 return BadRequest("Artist creation request is missing");
+            }
 
             try
             {
-                // TODO: extract this into a business logic / CQRS layer
-                
-                ArtistEntry artistEntry = _artistService.Get().SingleOrDefault(entry => entry.ArtistName == artistRequest.ArtistName);
-                IEnumerable<string> dateEntryIDs = CreateDateEntries(artistRequest.DateEntryRequests);
+                await _mediator.Send(new AddArtistEntryRequest { ArtistRequest = artistRequest });
 
-                if (artistEntry == null)
-                {
-                    artistEntry = new ArtistEntry(string.Empty, artistRequest.ArtistName, dateEntryIDs);
-                    _artistService.Create(artistEntry);
-                }
-                else
-                {
-                    artistEntry.AddDateEntries(dateEntryIDs);
-                    _artistService.Update(artistEntry.Id, artistEntry);
-                }
+                IEnumerable<ArtistResponseDTO> result = await _mediator.Send(new GetArtistEntriesRequest());
 
-                return Ok(GetArtistEntriesAsDTO());
+                return Ok(result);
             }
             catch (Exception)
             {
@@ -57,27 +43,20 @@ namespace SeenLive.Server.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteDateEntry(DateEntryDeleteRequestDTO deletionRequest)
+        public async Task<ActionResult> DeleteDateEntry(DateEntryDeleteRequestDTO deletionRequest)
         {
             if (deletionRequest == null)
+            {
                 return BadRequest("Deletion request is missing");
+            }
 
             try
             {
-                ArtistEntry artist = _artistService.Get(deletionRequest.ArtistId);
-                bool removeResult = _datesService.Remove(deletionRequest.DateId);
-                artist.DateEntryIDs.Remove(deletionRequest.DateId);
-
-                if (artist.DateEntryIDs.Count > 0)
-                {                    
-                    _artistService.Update(deletionRequest.ArtistId, artist);
-
-                    return removeResult ? Ok() : NotFound() as ActionResult;
-                }
-
-                return DeleteArtistEntry(artist.Id)
+                bool deletedDate = await _mediator.Send(new DeleteDateEntryRequest(){ArtistId = deletionRequest.ArtistId, DateId = deletionRequest.DateId});
+                
+                return deletedDate
                     ? Ok()
-                    : NotFound() as ActionResult;
+                    : NotFound();
             }
             catch (Exception)
             {
@@ -86,16 +65,20 @@ namespace SeenLive.Server.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteArtistEntry(ArtistDeleteRequestDTO request)
+        public async Task<ActionResult> DeleteArtistEntry(ArtistDeleteRequestDTO request)
         {
             if (request == null)
+            {
                 return BadRequest("Deletion request is missing");
+            }
 
             try
             {
-                return DeleteArtistEntry(request.ArtistEntryId) 
+                bool deletedArtist = await _mediator.Send(new DeleteArtistEntryRequest { ArtistEntryId = request.ArtistEntryId });
+                
+                return deletedArtist
                     ? Ok() 
-                    : NotFound() as ActionResult;
+                    : NotFound();
             }
             catch(Exception)
             {
@@ -103,42 +86,19 @@ namespace SeenLive.Server.Controllers
             }            
         }
 
-        private bool DeleteArtistEntry(string artistEntryId)
-        {
-            ArtistEntry artist = _artistService.Get(artistEntryId);
-            foreach (string dateId in artist.DateEntryIDs)
-            {
-                _datesService.Remove(dateId);
-            }
-            return _artistService.Remove(artistEntryId);
-        }
-
         [HttpGet]
-        public ActionResult<IEnumerable<ArtistResponseDTO>> GetArtistEntries()
+        public async Task<ActionResult<IEnumerable<ArtistResponseDTO>>> GetArtistEntries()
         {
             try
             {
-                return Ok(GetArtistEntriesAsDTO());
+                IEnumerable<ArtistResponseDTO> ret = await _mediator.Send(new GetArtistEntriesRequest());
+                
+                return Ok(ret);
             }
             catch (Exception)
             {
                 return BadRequest();
             }
-        }
-
-        private IEnumerable<string> CreateDateEntries(IEnumerable<DateEntryCreationRequestDTO> requests)
-        {
-            return requests.Select(request =>
-            {
-                DateEntry newDateEntry = _datesService.Create(_mapper.Map<DateEntry>(request));
-                return newDateEntry?.Id;
-            });
-        }
-
-        private IEnumerable<ArtistResponseDTO> GetArtistEntriesAsDTO()
-        {
-            var ret = _artistService.Get().Select(entry => _mapper.Map<ArtistResponseDTO>(entry));
-            return ret;
         }
     }
 }

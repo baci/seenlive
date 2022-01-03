@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace SeenLive.Server.DTOs
+namespace SeenLive.Core.DTOs
 {
-    public class ArtistCreationRequestDTO
+    public record ArtistCreationRequestDTO
     {
         public string ArtistName { get; set; }
 
