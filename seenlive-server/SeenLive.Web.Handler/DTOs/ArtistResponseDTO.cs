@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace SeenLive.Server.DTOs
+namespace SeenLive.Core.DTOs
 {
-    public class ArtistResponseDTO
+    public record ArtistResponseDTO
     {
         public string Id { get; set; }
 

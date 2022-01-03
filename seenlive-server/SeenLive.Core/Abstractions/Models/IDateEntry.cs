@@ -1,7 +1,7 @@
-﻿namespace SeenLive.Server.DTOs
+﻿namespace SeenLive.Core.Abstractions.Models
 {
-    public class DateEntryDTO
-    {
+    public interface IDateEntry
+    {        
         public string Id { get; set; }
         public string Date { get; set; }
         public string Location { get; set; }
