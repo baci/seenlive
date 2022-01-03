@@ -10,7 +10,7 @@ The Frontend is written in React / Typescript, the backend in ASP.NET Core and C
 ## Requirements
 The following tools are required to compile and run seenlive locally:
 * NodeJS, NPM and Yarn (additional dependencies loaded from package definitions)
-* .NET Core 3.1
+* .NET Core 5.0
 * a MongoDB M0 Cluster running on some server
 
 ## Web Server
