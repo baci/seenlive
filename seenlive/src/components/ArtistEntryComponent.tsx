@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { configureStore } from '@reduxjs/toolkit';
 import ArtistEntry from '../entities/ArtistEntry';
 import {
     Typography,
@@ -15,7 +16,14 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import './../assets/scss/ArtistEntryComponent.scss';
 import DateEntryComponent from './DateEntryComponent';
-import { DeleteArtistEntryThunk, DeleteDateEntryThunk, GetArtistEntriesThunk } from '../store/ArtistsSlice';
+import { ArtistsSlice, DeleteArtistEntryThunk, DeleteDateEntryThunk, GetArtistEntriesThunk } from '../store/ArtistsSlice';
+
+const store = configureStore({
+    reducer: ArtistsSlice.reducer
+  })
+
+export type AppDispatch = typeof store.dispatch
+export const useAppDispatch = () => useDispatch<AppDispatch>()
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -45,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function useArtistsSlice() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const deleteArtistEntry = (artistEntryId : string) =>
         dispatch(DeleteArtistEntryThunk(artistEntryId)).then(_ => dispatch(GetArtistEntriesThunk()));
