@@ -16,8 +16,12 @@ namespace SeenLive.Web.Handler.Bands
     {
         [Required]
         public ArtistCreationRequestDTO ArtistRequest { get; set; }
-        
-        
+
+        public AddArtistEntryRequest(ArtistCreationRequestDTO artistRequest)
+        {
+            ArtistRequest = artistRequest;
+        }
+
         public class Handler : IRequestHandler<AddArtistEntryRequest>
         {
             private readonly IArtistService _artistService;
@@ -31,7 +35,7 @@ namespace SeenLive.Web.Handler.Bands
 
             public Task<Unit> Handle(AddArtistEntryRequest request, CancellationToken cancellationToken)
             {
-                IArtistEntry artistEntry = _artistService.Get().SingleOrDefault(entry => entry.ArtistName == request.ArtistRequest.ArtistName);
+                IArtistEntry? artistEntry = _artistService.Get().SingleOrDefault(entry => entry.ArtistName == request.ArtistRequest.ArtistName);
                 IEnumerable<string> dateEntryIDs = CreateDateEntries(request.ArtistRequest.DateEntryRequests);
 
                 if (artistEntry == null)
@@ -52,7 +56,7 @@ namespace SeenLive.Web.Handler.Bands
                 return requests.Select(request =>
                 {
                     IDateEntry newDateEntry = _datesService.Create(request.Date, request.Location, request.Remarks);
-                    return newDateEntry?.Id;
+                    return newDateEntry.Id;
                 });
             }
         }

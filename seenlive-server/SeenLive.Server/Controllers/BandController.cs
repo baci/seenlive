@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SeenLive.Core.Abstractions;
 using SeenLive.Core.DTOs;
 using SeenLive.Web.Handler.Bands;
 
