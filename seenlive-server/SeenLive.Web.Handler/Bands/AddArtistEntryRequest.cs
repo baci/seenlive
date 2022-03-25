@@ -9,6 +9,7 @@ using MediatR;
 using SeenLive.Core.Abstractions;
 using SeenLive.Core.Abstractions.Models;
 using SeenLive.Core.DTOs;
+using SeenLive.Web.Handler.Exceptions;
 
 namespace SeenLive.Web.Handler.Bands
 {
@@ -35,6 +36,11 @@ namespace SeenLive.Web.Handler.Bands
 
             public Task<Unit> Handle(AddArtistEntryRequest request, CancellationToken cancellationToken)
             {
+                if (!ValidateRequestData(request))
+                {
+                    throw new InvalidArgumentException("Invalid ArtistCreationRequestDTO");
+                }
+
                 IArtistEntry? artistEntry = _artistService.Get().SingleOrDefault(entry => entry.ArtistName == request.ArtistRequest.ArtistName);
                 IEnumerable<string> dateEntryIDs = CreateDateEntries(request.ArtistRequest.DateEntryRequests);
 
@@ -50,7 +56,15 @@ namespace SeenLive.Web.Handler.Bands
 
                 return Task.FromResult(Unit.Value);
             }
-            
+
+            private static bool ValidateRequestData(AddArtistEntryRequest request)
+            {
+                return request?.ArtistRequest.DateEntryRequests != null 
+                    && request.ArtistRequest.DateEntryRequests.Any()
+                    && request.ArtistRequest.DateEntryRequests.All(dateEntry => !string.IsNullOrWhiteSpace(dateEntry.Date))
+                    && !string.IsNullOrWhiteSpace(request.ArtistRequest.ArtistName);
+            }
+
             private IEnumerable<string> CreateDateEntries(IEnumerable<DateEntryCreationRequestDTO> requests)
             {
                 return requests.Select(request =>
