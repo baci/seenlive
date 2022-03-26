@@ -17,16 +17,22 @@ namespace SeenLive.Web.Handler.Tests
 {
     public class AddArtistEntryRequestTests
     {
-        private IArtistService _artistService;
-        private IDatesService _datesService;
+        private readonly IArtistService _artistService;
+        private readonly IDatesService _datesService;
 
         public static IEnumerable<object[]> InvalidArgumentsData => 
             new []
             {
-                new object[] { null, null },
+                new object[] { null!, null! },
                 new object[] { "test", new List<DateEntryCreationRequestDTO>() },
                 new object[] { "test", new List<DateEntryCreationRequestDTO> { new DateEntryCreationRequestDTO() } }
             };
+
+        public AddArtistEntryRequestTests()
+        {
+            _artistService = A.Fake<IArtistService>();
+            _datesService = A.Fake<IDatesService>();
+        }
 
         [Theory]
         [MemberData(nameof(InvalidArgumentsData))]
@@ -74,7 +80,7 @@ namespace SeenLive.Web.Handler.Tests
             await handler.Handle(request, CancellationToken.None);
 
             A.CallTo(_datesService).Where(call => call.Method.Name == nameof(_datesService.Create))
-                .MustHaveHappened(request.ArtistRequest.DateEntryRequests.Count(), Times.Exactly);
+                .MustHaveHappened(request.ArtistRequest!.DateEntryRequests.Count(), Times.Exactly);
             A.CallTo(_artistService).Where(call => call.Method.Name == nameof(_artistService.Create))
                 .MustHaveHappenedOnceExactly();
         }
@@ -90,7 +96,7 @@ namespace SeenLive.Web.Handler.Tests
             await handler.Handle(request, CancellationToken.None);
 
             A.CallTo(_datesService).Where(call => call.Method.Name == nameof(_datesService.Create))
-                .MustHaveHappened(request.ArtistRequest.DateEntryRequests.Count(), Times.Exactly)
+                .MustHaveHappened(request.ArtistRequest!.DateEntryRequests.Count(), Times.Exactly)
                 .Then(A.CallTo(artistEntry).Where(call => call.Method.Name == nameof(artistEntry.AddDateEntries))
                 .MustHaveHappenedOnceExactly())
                 .Then(A.CallTo(_artistService).Where(call => call.Method.Name == nameof(_artistService.Update))
@@ -100,7 +106,7 @@ namespace SeenLive.Web.Handler.Tests
         private IArtistEntry SetupArtistEntryInDb(AddArtistEntryRequest request)
         {
             IArtistEntry artistEntry = A.Fake<IArtistEntry>();
-            A.CallTo(() => artistEntry.ArtistName).Returns(request.ArtistRequest.ArtistName);
+            A.CallTo(() => artistEntry.ArtistName)!.Returns(request.ArtistRequest!.ArtistName);
             A.CallTo(() => _artistService.Get()).Returns(new[] { artistEntry });
             
             return artistEntry;
@@ -116,7 +122,7 @@ namespace SeenLive.Web.Handler.Tests
 
             A.CallTo(_datesService)
                 .Where(call => call.Method.Name == nameof(_datesService.Create))
-                .MustHaveHappened(request.ArtistRequest.DateEntryRequests.Count(), Times.Exactly);
+                .MustHaveHappened(request.ArtistRequest!.DateEntryRequests.Count(), Times.Exactly);
         }
 
         private static AddArtistEntryRequest CreateValidRequestWithOneDate()
@@ -161,13 +167,11 @@ namespace SeenLive.Web.Handler.Tests
 
         private AddArtistEntryRequest.Handler SetupHandler()
         {
-            _artistService = A.Fake<IArtistService>();
             A.CallTo(_artistService)
                 .Where(call => call.Method.Name == nameof(_artistService.Create))
                 .WithReturnType<IArtistEntry>()
                 .Returns(A.Fake<IArtistEntry>());
 
-            _datesService = A.Fake<IDatesService>();
             A.CallTo(_datesService)
                 .Where(call => call.Method.Name == nameof(_datesService.Create))
                 .WithReturnType<IDateEntry>()

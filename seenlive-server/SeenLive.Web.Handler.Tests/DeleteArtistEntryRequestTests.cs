@@ -12,8 +12,14 @@ namespace SeenLive.Web.Handler.Tests
 {
     public class DeleteArtistEntryRequestTests
     {
-        private IArtistService _artistService;
-        private IDatesService _datesService;
+        private readonly IArtistService _artistService;
+        private readonly IDatesService _datesService;
+
+        public DeleteArtistEntryRequestTests()
+        {
+            _artistService = A.Fake<IArtistService>();
+            _datesService = A.Fake<IDatesService>();
+        }
 
         [Fact]
         public async Task DeleteArtistEntry_EntryNotFound_NoEntryDeleted()
@@ -51,9 +57,6 @@ namespace SeenLive.Web.Handler.Tests
 
         private DeleteArtistEntryRequest.Handler SetupHandler()
         {
-            _artistService = A.Fake<IArtistService>();
-            _datesService = A.Fake<IDatesService>();
-            
             return new DeleteArtistEntryRequest.Handler(_artistService, _datesService);
         }
     }

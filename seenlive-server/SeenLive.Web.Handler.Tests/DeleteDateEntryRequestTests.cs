@@ -12,8 +12,14 @@ namespace SeenLive.Web.Handler.Tests
 {
     public class DeleteDateEntryRequestTests
     {
-        private IArtistService _artistService;
-        private IDatesService _datesService;
+        private readonly IArtistService _artistService;
+        private readonly IDatesService _datesService;
+
+        public DeleteDateEntryRequestTests()
+        {
+            _artistService = A.Fake<IArtistService>();
+            _datesService = A.Fake<IDatesService>();
+        }
 
         [Fact]
         public async Task DeleteDateEntry_ArtistNotFound_DoesNotDeleteAnything()
@@ -103,11 +109,9 @@ namespace SeenLive.Web.Handler.Tests
 
         private DeleteDateEntryRequest.Handler SetupHandler()
         {
-            _artistService = A.Fake<IArtistService>();
             A.CallTo(_artistService).Where(call => call.Method.Name == nameof(_artistService.Remove))
                 .WithReturnType<bool>().Returns(true);
             
-            _datesService = A.Fake<IDatesService>();
             A.CallTo(_datesService).Where(call => call.Method.Name == nameof(_datesService.Remove))
                 .WithReturnType<bool>().Returns(true);
             

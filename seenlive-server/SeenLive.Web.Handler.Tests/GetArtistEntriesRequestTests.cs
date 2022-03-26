@@ -15,8 +15,14 @@ namespace SeenLive.Web.Handler.Tests
 {
     public class GetArtistEntriesRequestTests
     {
-        private IArtistService _artistService;
-        private IDatesService _datesService;
+        private readonly IArtistService _artistService;
+        private readonly IDatesService _datesService;
+
+        public GetArtistEntriesRequestTests()
+        {
+            _artistService = A.Fake<IArtistService>();
+            _datesService = A.Fake<IDatesService>();
+        }
 
         [Theory]
         [MemberData(nameof(EntriesInDb))]
@@ -59,9 +65,6 @@ namespace SeenLive.Web.Handler.Tests
 
         private GetArtistEntriesRequest.Handler SetupHandler()
         {
-            _artistService = A.Fake<IArtistService>();
-            _datesService = A.Fake<IDatesService>();
-            
             return new GetArtistEntriesRequest.Handler(_artistService, _datesService);
         }
     }
