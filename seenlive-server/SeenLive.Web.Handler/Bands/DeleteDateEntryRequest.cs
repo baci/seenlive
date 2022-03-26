@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -9,11 +10,11 @@ namespace SeenLive.Web.Handler.Bands
 {
     public class DeleteDateEntryRequest : IRequest<bool>
     {
-        [Required]
-        public string DateId { get; set; }
+        [Required] 
+        public string DateId { get; init; } = string.Empty;
 
-        [Required]
-        public string ArtistId { get; set; }
+        [Required] 
+        public string ArtistId { get; init; } = string.Empty;
 
         public class Handler : IRequestHandler<DeleteDateEntryRequest, bool>
         {
@@ -28,19 +29,34 @@ namespace SeenLive.Web.Handler.Bands
 
             public Task<bool> Handle(DeleteDateEntryRequest request, CancellationToken cancellationToken)
             {
-                
-                IArtistEntry artist = _artistService.Get(request.ArtistId);
-                bool removeResult = _datesService.Remove(request.DateId);
-                artist.DateEntryIDs.Remove(request.DateId);
-
-                if (artist.DateEntryIDs.Count > 0)
-                {                    
-                    _artistService.Update(request.ArtistId, artist);
-
-                    return Task.FromResult(removeResult);
+                IArtistEntry? artist = _artistService.Get(request.ArtistId);
+                if (artist == null)
+                {
+                    return Task.FromResult(false);
                 }
 
-                return Task.FromResult(_artistService.Remove(artist.Id));
+                bool removeResult = RemoveDate(request.DateId, artist) && 
+                                    UpdateOrDeleteArtist(artist);
+                
+                return Task.FromResult(removeResult);
+            }
+
+            private bool RemoveDate(string dateId, IArtistEntry artist)
+            {
+                return artist.DateEntryIDs.Remove(dateId) &&
+                       _datesService.Remove(dateId);
+            }
+
+            private bool UpdateOrDeleteArtist(IArtistEntry artist)
+            {
+                if (artist.DateEntryIDs.Any())
+                {
+                    _artistService.Update(artist.Id, artist);
+
+                    return true;
+                }
+
+                return _artistService.Remove(artist.Id);
             }
         }
     }

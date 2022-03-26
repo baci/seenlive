@@ -9,8 +9,8 @@ namespace SeenLive.Web.Handler.Bands
 {
     public class DeleteArtistEntryRequest : IRequest<bool>
     {
-        [Required]
-        public string ArtistEntryId { get; set; }
+        [Required] 
+        public string ArtistEntryId { get; init; } = string.Empty;
         
         public class Handler : IRequestHandler<DeleteArtistEntryRequest, bool>
         {
@@ -25,9 +25,12 @@ namespace SeenLive.Web.Handler.Bands
 
             public Task<bool> Handle(DeleteArtistEntryRequest request, CancellationToken cancellationToken)
             {
-                
-                IArtistEntry artist = _artistService.Get(request.ArtistEntryId);
-                
+                IArtistEntry? artist = _artistService.Get(request.ArtistEntryId);
+                if (artist == null)
+                {
+                    return Task.FromResult(false);
+                }
+
                 foreach (string dateId in artist.DateEntryIDs)
                 {
                     _datesService.Remove(dateId);

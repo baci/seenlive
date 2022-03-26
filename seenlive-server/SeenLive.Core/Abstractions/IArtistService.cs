@@ -7,7 +7,7 @@ namespace SeenLive.Core.Abstractions
     {
         public IEnumerable<IArtistEntry> Get();
 
-        public IArtistEntry Get(string id);
+        public IArtistEntry? Get(string id);
 
         public IArtistEntry Create(string id, string artistName, IEnumerable<string> dateEntryIds);
 
