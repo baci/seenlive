@@ -29,7 +29,7 @@ namespace SeenLive.Web.Controllers
 
             try
             {
-                await _mediator.Send(new AddArtistEntryRequest { ArtistRequest = artistRequest });
+                await _mediator.Send(new AddArtistEntryRequest(artistRequest));
 
                 IEnumerable<ArtistResponseDTO> result = await _mediator.Send(new GetArtistEntriesRequest());
 
