@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SeenLive.Web.Handler.DTOs;
 using Xunit;
 
 namespace SeenLive.Web.Handler.Tests

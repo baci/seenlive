@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SeenLive.Core.DTOs;
 using SeenLive.Web.Handler.Bands;
+using SeenLive.Web.Handler.DTOs;
 
 namespace SeenLive.Web.Controllers
 {

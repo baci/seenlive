@@ -14,7 +14,7 @@ namespace SeenLive.DataAccess.Models
 
         public string ArtistName { get; set; }
 
-        public IList<string> DateEntryIDs { get; private set; }
+        public IList<string> DateEntryIDs { get; set; }
 
         public ArtistEntry(string id, string artistName, IEnumerable<string> dateEntryIDs)
         {            

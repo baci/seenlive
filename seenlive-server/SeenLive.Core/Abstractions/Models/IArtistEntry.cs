@@ -8,7 +8,7 @@ namespace SeenLive.Core.Abstractions.Models
 
         public string ArtistName { get; set; }
 
-        public IList<string> DateEntryIDs { get; }
+        public IList<string> DateEntryIDs { get; set; }
 
         void AddDateEntries(IEnumerable<string> dateEntryIDs);
     }

@@ -7,6 +7,7 @@ using MediatR;
 using SeenLive.Core.Abstractions;
 using SeenLive.Core.Abstractions.Models;
 using SeenLive.Core.DTOs;
+using SeenLive.Web.Handler.DTOs;
 using SeenLive.Web.Handler.Exceptions;
 
 namespace SeenLive.Web.Handler.Bands
@@ -14,7 +15,7 @@ namespace SeenLive.Web.Handler.Bands
     public class AddArtistEntryRequest : IRequest
     {
         [Required]
-        public ArtistCreationRequestDTO ArtistRequest { get; set; }
+        public ArtistCreationRequestDTO? ArtistRequest { get; }
 
         public AddArtistEntryRequest(ArtistCreationRequestDTO artistRequest)
         {
@@ -44,7 +45,7 @@ namespace SeenLive.Web.Handler.Bands
 
                 if (artistEntry == null)
                 {
-                    artistEntry = _artistService.Create(string.Empty, request.ArtistRequest.ArtistName, dateEntryIDs);
+                    _artistService.Create(string.Empty, request.ArtistRequest.ArtistName, dateEntryIDs);
                 }
                 else
                 {
@@ -57,7 +58,7 @@ namespace SeenLive.Web.Handler.Bands
 
             private static bool ValidateRequestData(AddArtistEntryRequest request)
             {
-                return request?.ArtistRequest.DateEntryRequests != null 
+                return request.ArtistRequest?.DateEntryRequests != null 
                     && request.ArtistRequest.DateEntryRequests.Any()
                     && request.ArtistRequest.DateEntryRequests.All(dateEntry => !string.IsNullOrWhiteSpace(dateEntry.Date))
                     && !string.IsNullOrWhiteSpace(request.ArtistRequest.ArtistName);
