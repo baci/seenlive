@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Mapster;
 using MediatR;
 using SeenLive.Core.Abstractions;
 using SeenLive.Core.Abstractions.Models;
@@ -71,7 +69,7 @@ namespace SeenLive.Web.Handler.Bands
                 {
                     IDateEntry newDateEntry = _datesService.Create(request.Date, request.Location, request.Remarks);
                     return newDateEntry.Id;
-                });
+                }).ToArray();
             }
         }
     }
