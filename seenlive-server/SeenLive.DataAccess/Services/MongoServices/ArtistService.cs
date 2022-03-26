@@ -20,7 +20,7 @@ namespace SeenLive.DataAccess.Services.MongoServices
         public IEnumerable<IArtistEntry> Get() =>
             _artistEntries.Find(entry => true).ToList().ConvertAll<IArtistEntry>(x => x);
 
-        public IArtistEntry Get(string id) =>
+        public IArtistEntry? Get(string id) =>
             _artistEntries.Find(entry => entry.Id == id).FirstOrDefault();
 
         public bool Update(string id, IArtistEntry newEntry) =>
