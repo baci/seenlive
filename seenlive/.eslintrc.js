@@ -314,8 +314,6 @@
 
                 "rules": {
 
-                    "no-array-mutation": true,
-
                     "whitespace": [
 
                         true,
