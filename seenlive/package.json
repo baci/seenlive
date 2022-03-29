@@ -8,7 +8,7 @@
     "url": "http://www.tillriemer.de"
   },
   "scripts": {
-    "build": "yarn run clean-dist && yarn run lint && webpack -p --config=configs/webpack/prod.js",
+    "build": "yarn run clean-dist && yarn run lint && webpack --mode production --config=configs/webpack/prod.js",
     "clean-dist": "rimraf dist/*",
     "lint": "eslint \"**/*.ts*\" --fix",
     "start": "yarn run start-dev",
