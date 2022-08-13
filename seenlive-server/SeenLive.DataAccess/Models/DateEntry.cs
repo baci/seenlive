@@ -1,9 +1,10 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using SeenLive.Core.Abstractions.Models;
 
 namespace SeenLive.DataAccess.Models
 {
-    public class DateEntry
+    public class DateEntry : IDateEntry
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

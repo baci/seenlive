@@ -1,4 +1,4 @@
-﻿namespace SeenLive.DataAccess.Settings
+﻿namespace SeenLive.Core.Abstractions.Settings
 {
     public interface ISeenLiveDatabaseSettings
     {

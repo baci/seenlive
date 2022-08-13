@@ -1,6 +1,6 @@
-﻿namespace SeenLive.Server.DTOs
+﻿namespace SeenLive.Core.DTOs
 {
-    public class DateEntryDeleteRequestDTO
+    public record DateEntryDeleteRequestDTO
     {
         public string ArtistId { get; set; }
         public string DateId { get; set; }

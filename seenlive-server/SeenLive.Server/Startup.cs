@@ -1,6 +1,9 @@
 using System;
 using System.Linq;
-using AutoMapper;
+using System.Reflection;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Autofac.Integration.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,14 +12,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using SeenLive.DataAccess.Services;
-using SeenLive.DataAccess.Services.MongoServices;
-using SeenLive.DataAccess.Settings;
+using SeenLive.DataAccess;
 using SeenLive.DataAccess.Settings.MongoSettings;
+using SeenLive.Web.Handler;
 
-namespace SeenLive.Server
+namespace SeenLive.Web
 {
     public class Startup
     {
@@ -26,19 +27,24 @@ namespace SeenLive.Server
         }
 
         public IConfiguration Configuration { get; }
+        
+        public ILifetimeScope AutofacContainer { get; private set; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services
                 .AddMvc(options => options.EnableEndpointRouting = false)
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
+            
             services.AddSwaggerGen(options =>
                 {
-                    options.SwaggerDoc("seenlive-v1",
+                    const string versionString = "v1";
+
+                    options.SwaggerDoc("seenlive-" + versionString,
                         new OpenApiInfo
                         {
                             Title = "SeenLive API", 
-                            Version = "v1", 
+                            Version = versionString, 
                             Contact = new OpenApiContact{ Name="Till Riemer", Email="till.riemer@gmail.com" }
                         }
                     );
@@ -72,24 +78,12 @@ namespace SeenLive.Server
             );
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
-                options.AddPolicy("AllowAnyMethod", options => options.AllowAnyMethod());
-                options.AddPolicy("AllowHeader", options => options.AllowAnyHeader());
+                options.AddPolicy("AllowOrigin", builder => builder.AllowAnyOrigin());
+                options.AddPolicy("AllowAnyMethod", builder => builder.AllowAnyMethod());
+                options.AddPolicy("AllowHeader", builder => builder.AllowAnyHeader());
             });
 
-            // TODO add bearer authentication
-
-            // database setup with appsettings configuration
-            services.Configure<SeenLiveDatabaseSettings>(Configuration.GetSection(nameof(SeenLiveDatabaseSettings)));
-            services.AddSingleton<ISeenLiveDatabaseSettings>(sp =>
-                sp.GetRequiredService<IOptions<SeenLiveDatabaseSettings>>().Value);
-            services.AddSingleton<MongoDBContext>();
-
-            // configure AutoMapper for mapping between data models and DTOs
-            services.AddAutoMapper(typeof(Startup));
-
-            services.AddScoped<IArtistService, ArtistService>();
-            services.AddScoped<IDatesService, DatesService>();            
+            // TODO add bearer authentication    
 
             services.AddControllers();
         }
@@ -97,6 +91,8 @@ namespace SeenLive.Server
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            AutofacContainer = app.ApplicationServices.GetAutofacRoot();
+            
             app.UseCors(option =>
             {
                 option.AllowAnyOrigin();
@@ -107,6 +103,7 @@ namespace SeenLive.Server
             {
                 app.UseDeveloperExceptionPage();
             }
+
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
@@ -126,6 +123,16 @@ namespace SeenLive.Server
                 FileProvider = new PhysicalFileProvider(env?.ContentRootPath),
                 RequestPath = new PathString("")
             });
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            var databaseSettings =
+                Configuration.GetSection("SeenLiveDatabaseSettings").Get<SeenLiveDatabaseSettings>();
+            
+            builder.RegisterControllers(Assembly.GetExecutingAssembly());
+            builder.RegisterModule(new DataAccessModule(databaseSettings));
+            builder.RegisterModule(new WebHandlerModule());
         }
     }
 }
