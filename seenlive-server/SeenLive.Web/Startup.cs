@@ -43,7 +43,7 @@ namespace SeenLive.Web
                         {
                             Title = "SeenLive API", 
                             Version = versionString, 
-                            Contact = new OpenApiContact{ Name="Till Riemer", Email="till.riemer@gmail.com" }
+                            Contact = new OpenApiContact{ Name="Till Riemer", Email="seenlive@tillriemer.de" }
                         }
                     );
                     options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
