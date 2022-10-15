@@ -10,6 +10,10 @@ services:
         - customsslport=5001
       target: run-env-prod
     image: seenlive-server-prod
+    environment:
+      - seenlive-db-server
+      - seenlive-db-username
+      - seenlive-db-password
     ports: 
       - 5000:5000
       - 5001:5001

@@ -10,11 +10,13 @@ RUN dotnet publish -c Release -o out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS run-env-prod
-# telling the application what port to run on.
+
+# custom application ports
 ARG customport
 ARG customsslport
 ENV ASPNETCORE_URLS=$customport
 ENV ASPNETCORE_HTTPS_PORT=$customsslport
+
 WORKDIR /app
 COPY --from=build-env-prod /app/out .
 ENTRYPOINT ["dotnet", "SeenLive.Web.dll"]
