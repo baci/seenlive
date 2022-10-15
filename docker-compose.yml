@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  server-prod:
+    build:
+      context: ./seenlive-server
+      dockerfile: Dockerfile
+      target: run-env-prod
+    image: seenlive-server-prod
+    ports: 
+      - 5000:5000
+      - 5001:5001
+
+  client-prod:
+    build:
+      context: ./seenlive
+      dockerfile: Dockerfile
+      target: production
+    image: seenlive-client-prod
+    ports:
+      - 3000:3000
+      - 3001:3001
+    depends_on: 
+      - server-prod
