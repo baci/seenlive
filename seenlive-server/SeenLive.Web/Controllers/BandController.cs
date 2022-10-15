@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SeenLive.Core.DTOs;
 using SeenLive.Web.Handler.Bands;
 using SeenLive.Web.Handler.DTOs;
@@ -14,6 +15,7 @@ namespace SeenLive.Web.Controllers
     public class BandController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<BandController> _logger;
 
         public BandController(IMediator mediator)
         {
@@ -36,9 +38,10 @@ namespace SeenLive.Web.Controllers
 
                 return Ok(result);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return BadRequest();
+                _logger.LogError(e.Message);
+                return BadRequest("Internal Server Error");
             }
         }
 
@@ -58,9 +61,10 @@ namespace SeenLive.Web.Controllers
                     ? Ok()
                     : NotFound();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return BadRequest();
+                _logger.LogError(e.Message);
+                return BadRequest("Internal Server Error");
             }            
         }
 
@@ -80,9 +84,10 @@ namespace SeenLive.Web.Controllers
                     ? Ok() 
                     : NotFound();
             }
-            catch(Exception)
+            catch(Exception e)
             {
-                return BadRequest();
+                _logger.LogError(e.Message);
+                return BadRequest("Internal Server Error");
             }            
         }
 
@@ -95,9 +100,10 @@ namespace SeenLive.Web.Controllers
                 
                 return Ok(ret);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return BadRequest();
+                _logger.LogError(e.Message);
+                return BadRequest("Internal Server Error");
             }
         }
     }

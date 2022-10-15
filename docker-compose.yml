@@ -6,7 +6,8 @@ services:
       context: ./seenlive-server
       dockerfile: Dockerfile
       args:
-        - customport=http://+:5000;http://+:5001
+        - customport=http://+:5000
+        - customsslport=5001
       target: run-env-prod
     image: seenlive-server-prod
     ports: 

@@ -32,9 +32,7 @@ namespace SeenLive.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddMvc(options => options.EnableEndpointRouting = false)
-                .SetCompatibilityVersion(CompatibilityVersion.Latest);
+            services.AddMvc(options => options.EnableEndpointRouting = false);
             
             services.AddSwaggerGen(options =>
                 {
@@ -99,12 +97,18 @@ namespace SeenLive.Web
                 option.AllowAnyMethod();
                 option.AllowAnyHeader();
             });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            // TODO switched off until we have a certificate
+            //else
+            //{
+            //    app.UseHsts();
+            //}
+            //app.UseHttpsRedirection();
 
-            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
