@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeenLive.Web", "SeenLive.Server\SeenLive.Web.csproj", "{AAF3AAE5-1B21-4797-BFBB-F306562AF8F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeenLive.Web", "SeenLive.Web\SeenLive.Web.csproj", "{AAF3AAE5-1B21-4797-BFBB-F306562AF8F0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeenLive.DataAccess", "SeenLive.DataAccess\SeenLive.DataAccess.csproj", "{EF5AB876-F70B-4CFF-B8B2-EBA46C456671}"
 EndProject
