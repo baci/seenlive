@@ -17,9 +17,10 @@ namespace SeenLive.Web.Controllers
         private readonly IMediator _mediator;
         private readonly ILogger<BandController> _logger;
 
-        public BandController(IMediator mediator)
+        public BandController(IMediator mediator, ILogger<BandController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpPost]

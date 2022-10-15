@@ -1,6 +1,7 @@
 ﻿using Autofac;
-using MediatR;
-using System.Reflection;
+using MediatR.Extensions.Autofac.DependencyInjection.Builder;
+using MediatR.Extensions.Autofac.DependencyInjection;
+using SeenLive.Web.Handler.Bands;
 
 namespace SeenLive.Web.Handler
 {
@@ -10,34 +11,14 @@ namespace SeenLive.Web.Handler
         {
             base.Load(builder);
 
-            LoadMediatr(builder);
-        }
+            var configuration = MediatRConfigurationBuilder
+            .Create(typeof(AddArtistEntryRequest).Assembly)
+            .WithAllOpenGenericHandlerTypesRegistered()
+            .Build();
 
-        private void LoadMediatr(ContainerBuilder builder)
-        {
-            // Uncomment to enable polymorphic dispatching of requests, but note that
-            // this will conflict with generic pipeline behaviors
-            // builder.RegisterSource(new ContravariantRegistrationSource());
-
-            // Mediator itself
-            builder
-                .RegisterType<Mediator>()
-                .As<IMediator>()
-                .InstancePerLifetimeScope();
-
-            // request & notification handlers
-            builder.Register<ServiceFactory>(context =>
-            {
-                var c = context.Resolve<IComponentContext>();
-                return t => c.Resolve(t);
-            });
-
-            // finally register our custom code (individually, or via assembly scanning)
-            // - requests & handlers as transient, i.e. InstancePerDependency()
-            // - pre/post-processors as scoped/per-request, i.e. InstancePerLifetimeScope()
-            // - behaviors as transient, i.e. InstancePerDependency()
-            builder.RegisterAssemblyTypes(typeof(WebHandlerModule).GetTypeInfo().Assembly).AsImplementedInterfaces(); // via assembly scan
-                                                                                                            //builder.RegisterType<MyHandler>().AsImplementedInterfaces().InstancePerDependency();          // or individually
+            // this will add all your Request- and Notificationhandler
+            // that are located in the same project as your program-class
+            builder.RegisterMediatR(configuration);
         }
     }
 }
