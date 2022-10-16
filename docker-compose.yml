@@ -7,9 +7,19 @@ services:
       dockerfile: Dockerfile
       target: run-env-prod
     image: seenlive-server-prod
+    environment:
+      - seenlive-db-server
+      - seenlive-db-username
+      - seenlive-db-password
+      - ASPNETCORE_URLS=http://*:5000;http://*:5001
+      - ASPNETCORE_HTTPS_PORT=5001
+      - ASPNETCORE_Kestrel__Certificates__Default__Password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path
     ports: 
       - 5000:5000
       - 5001:5001
+    volumes:
+      - D:\temp\:/app/https
 
   client-prod:
     build:

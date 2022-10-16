@@ -7,7 +7,6 @@ using Autofac.Integration.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -32,9 +31,7 @@ namespace SeenLive.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-                .AddMvc(options => options.EnableEndpointRouting = false)
-                .SetCompatibilityVersion(CompatibilityVersion.Latest);
+            services.AddMvc(options => options.EnableEndpointRouting = false);
             
             services.AddSwaggerGen(options =>
                 {
@@ -45,7 +42,7 @@ namespace SeenLive.Web
                         {
                             Title = "SeenLive API", 
                             Version = versionString, 
-                            Contact = new OpenApiContact{ Name="Till Riemer", Email="till.riemer@gmail.com" }
+                            Contact = new OpenApiContact{ Name="Till Riemer", Email="seenlive@tillriemer.de" }
                         }
                     );
                     options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
@@ -99,12 +96,17 @@ namespace SeenLive.Web
                 option.AllowAnyMethod();
                 option.AllowAnyHeader();
             });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            else
+            {
+                app.UseHsts(); // default is 30 days, change if needed
+            }
             app.UseHttpsRedirection();
+
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
