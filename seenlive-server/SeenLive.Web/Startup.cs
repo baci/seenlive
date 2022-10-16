@@ -7,7 +7,6 @@ using Autofac.Integration.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -102,12 +101,11 @@ namespace SeenLive.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-            // TODO switched off until we have a certificate
-            //else
-            //{
-            //    app.UseHsts();
-            //}
-            //app.UseHttpsRedirection();
+            else
+            {
+                app.UseHsts(); // default is 30 days, change if needed
+            }
+            app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseAuthentication();
