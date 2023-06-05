@@ -1,12 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
+    <LangVersion>11</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Bson" Version="2.18.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.18.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.19.2" />
+    <PackageReference Include="MongoDB.Driver" Version="2.19.2" />
   </ItemGroup>
 
   <ItemGroup>

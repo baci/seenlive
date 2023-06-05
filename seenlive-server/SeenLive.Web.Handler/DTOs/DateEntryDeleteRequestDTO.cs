@@ -2,7 +2,7 @@
 {
     public record DateEntryDeleteRequestDTO
     {
-        public string ArtistId { get; set; }
-        public string DateId { get; set; }
+        public required string ArtistId { get; set; }
+        public required string DateId { get; set; }
     }
 }

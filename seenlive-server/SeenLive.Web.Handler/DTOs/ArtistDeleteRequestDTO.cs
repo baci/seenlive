@@ -2,6 +2,6 @@
 {
     public record ArtistDeleteRequestDTO
     {
-        public string ArtistEntryId { get; set; }
+        public required string ArtistEntryId { get; set; }
     }
 }

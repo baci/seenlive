@@ -26,9 +26,17 @@ namespace SeenLive.Web
                          options.Listen(IPAddress.Loopback, 5000);
                          options.Listen(IPAddress.Loopback, 5001, listenOptions =>
                          {
-                             string certPath = Environment.GetEnvironmentVariable("ASPNETCORE_Kestrel__Certificates__Default__Path");
-                             string certPwd = Environment.GetEnvironmentVariable("ASPNETCORE_Kestrel__Certificates__Default__Password");
-                             listenOptions.UseHttps(certPath, certPwd);
+                             string? certPath = Environment.GetEnvironmentVariable("ASPNETCORE_Kestrel__Certificates__Default__Path");
+                             string? certPwd = Environment.GetEnvironmentVariable("ASPNETCORE_Kestrel__Certificates__Default__Password");
+                             
+                             if(certPath != null && certPwd != null)
+                             {
+                                 listenOptions.UseHttps(certPath, certPwd);
+                             }
+                             else
+                             {
+                                 Console.WriteLine("SSL Certificate not found in Env");
+                             }
                          });
                      });
                     webBuilder.UseIISIntegration();                    

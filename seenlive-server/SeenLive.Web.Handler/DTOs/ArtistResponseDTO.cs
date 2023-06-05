@@ -4,10 +4,10 @@ namespace SeenLive.Core.DTOs
 {
     public record ArtistResponseDTO
     {
-        public string Id { get; set; }
+        public required string Id { get; set; }
 
-        public string ArtistName { get; set; }
+        public required string ArtistName { get; set; }
 
-        public IList<DateEntryDTO> DateEntries { get; set; }
+        public required IList<DateEntryDTO> DateEntries { get; set; }
     }
 }

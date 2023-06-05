@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Autofac.Integration.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -26,8 +25,8 @@ namespace SeenLive.Web
         }
 
         public IConfiguration Configuration { get; }
-        
-        public ILifetimeScope AutofacContainer { get; private set; }
+
+        public ILifetimeScope AutofacContainer { get; private set; } = null!;
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -122,7 +121,7 @@ namespace SeenLive.Web
             app.UseMvc();
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(env?.ContentRootPath),
+                FileProvider = new PhysicalFileProvider(env.ContentRootPath),
                 RequestPath = new PathString("")
             });
         }
@@ -130,11 +129,13 @@ namespace SeenLive.Web
         public void ConfigureContainer(ContainerBuilder builder)
         {
             var databaseSettings =
-                Configuration.GetSection("SeenLiveDatabaseSettings").Get<SeenLiveDatabaseSettings>();
+                Configuration.GetSection("SeenLiveDatabaseSettings").Get<SeenLiveDatabaseSettings>()!;
             
-            builder.RegisterControllers(Assembly.GetExecutingAssembly());
             builder.RegisterModule(new DataAccessModule(databaseSettings));
             builder.RegisterModule(new WebHandlerModule());
+            
+            // TODO register controllers
+            
         }
     }
 }

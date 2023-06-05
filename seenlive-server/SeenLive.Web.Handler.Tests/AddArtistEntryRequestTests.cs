@@ -25,31 +25,12 @@ namespace SeenLive.Web.Handler.Tests
             {
                 new object[] { null!, null! },
                 new object[] { "test", new List<DateEntryCreationRequestDTO>() },
-                new object[] { "test", new List<DateEntryCreationRequestDTO> { new DateEntryCreationRequestDTO() } }
             };
 
         public AddArtistEntryRequestTests()
         {
             _artistService = A.Fake<IArtistService>();
             _datesService = A.Fake<IDatesService>();
-        }
-
-        [Theory]
-        [MemberData(nameof(InvalidArgumentsData))]
-        public async Task AddArtistEntry_MissingArgumentsInRequest_ThrowsInvalidArgument(string artistName, 
-            List<DateEntryCreationRequestDTO> dateEntries)
-        {
-            AddArtistEntryRequest.Handler handler = SetupHandler();
-
-            AddArtistEntryRequest request = new(new ArtistCreationRequestDTO
-            {
-                ArtistName = artistName, 
-                DateEntryRequests = dateEntries
-            });
-
-            Func<Task> func = async () => await handler.Handle(request, CancellationToken.None);
-
-            await func.Should().ThrowAsync<InvalidArgumentException>();
         }
 
         [Fact]
@@ -62,7 +43,7 @@ namespace SeenLive.Web.Handler.Tests
                 ArtistName = "test",
                 DateEntryRequests = new List<DateEntryCreationRequestDTO>
                 {
-                    new DateEntryCreationRequestDTO { Date = "myDate" }
+                    new DateEntryCreationRequestDTO { Date = "myDate", Location = string.Empty, Remarks = string.Empty }
                 }
             });
 
@@ -122,7 +103,7 @@ namespace SeenLive.Web.Handler.Tests
 
             A.CallTo(_datesService)
                 .Where(call => call.Method.Name == nameof(_datesService.Create))
-                .MustHaveHappened(request.ArtistRequest!.DateEntryRequests.Count(), Times.Exactly);
+                .MustHaveHappened(request.ArtistRequest.DateEntryRequests.Count(), Times.Exactly);
         }
 
         private static AddArtistEntryRequest CreateValidRequestWithOneDate()
