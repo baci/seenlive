@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using MediatR;
 using SeenLive.Core.Abstractions;
 using SeenLive.Core.Abstractions.Models;
-using SeenLive.Core.DTOs;
 using SeenLive.Web.Handler.DTOs;
 using SeenLive.Web.Handler.Exceptions;
 

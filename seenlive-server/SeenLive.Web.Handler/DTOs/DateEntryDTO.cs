@@ -1,4 +1,4 @@
-﻿namespace SeenLive.Core.DTOs
+﻿namespace SeenLive.Web.Handler.DTOs
 {
     public record DateEntryDTO
     {

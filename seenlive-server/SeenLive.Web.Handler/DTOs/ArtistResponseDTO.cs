@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SeenLive.Core.DTOs
+namespace SeenLive.Web.Handler.DTOs
 {
     public record ArtistResponseDTO
     {

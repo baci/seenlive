@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SeenLive.Core.DTOs;
 using SeenLive.Web.Handler.Bands;
 using SeenLive.Web.Handler.DTOs;
 

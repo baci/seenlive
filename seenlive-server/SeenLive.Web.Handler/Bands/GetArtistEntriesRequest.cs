@@ -2,11 +2,11 @@
 using MediatR;
 using SeenLive.Core.Abstractions;
 using SeenLive.Core.Abstractions.Models;
-using SeenLive.Core.DTOs;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SeenLive.Web.Handler.DTOs;
 
 namespace SeenLive.Web.Handler.Bands
 {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using SeenLive.Core.DTOs;
 
 namespace SeenLive.Web.Handler.DTOs
 {
