@@ -2,33 +2,38 @@ version: "3.9"
 
 services:
   server-prod:
+    environment:
+      - seenlive-db-server=${DB_SERVER}
+      - seenlive-db-username=${DB_USERNAME}
+      - seenlive-db-password=${DB_PASSWORD}
+      - ASPNETCORE_URLS=https://+:443;http://+:80;
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${KESTREL_PASSWORD}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/https/aspnetapp.pfx
     build:
       context: ./seenlive-server
-      dockerfile: Dockerfile
-      target: run-env-prod
-    image: seenlive-server-prod
-    environment:
-      - seenlive-db-server
-      - seenlive-db-username
-      - seenlive-db-password
-      - ASPNETCORE_URLS=http://*:5000;http://*:5001
-      - ASPNETCORE_HTTPS_PORT=5001
-      - ASPNETCORE_Kestrel__Certificates__Default__Password
-      - ASPNETCORE_Kestrel__Certificates__Default__Path
+    container_name: seenlive-server-prod    
     ports: 
-      - 5000:5000
-      - 5001:5001
+      - 5000:80
+      - 5001:443
     volumes:
-      - D:\temp\:/app/https
+      - ~/.aspnet/https:/app/https # TODO retrieve certificate from GitHub secret
+    networks:
+      - seenlive_network
 
   client-prod:
     build:
       context: ./seenlive
-      dockerfile: Dockerfile
-      target: production
-    image: seenlive-client-prod
+    container_name: seenlive-client-prod
     ports:
       - 3000:3000
       - 3001:3001
+    networks:
+      - seenlive_network
     depends_on: 
       - server-prod
+      
+networks:
+  seenlive_network:
+    name: seenlive_network
+    driver: bridge
+    external: false

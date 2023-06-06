@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
@@ -89,6 +88,7 @@ namespace SeenLive.Web
         {
             AutofacContainer = app.ApplicationServices.GetAutofacRoot();
             
+            app.UseRouting();
             app.UseCors(option =>
             {
                 option.AllowAnyOrigin();
@@ -104,25 +104,20 @@ namespace SeenLive.Web
             {
                 app.UseHsts(); // default is 30 days, change if needed
             }
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
+            //app.UseHttpsRedirection();
+            
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-            });
+            
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/seenlive-v1/swagger.json", "SeenLive API");
             });
-            app.UseMvc();
-            app.UseStaticFiles(new StaticFileOptions
+            
+            app.UseEndpoints(endpoints =>
             {
-                FileProvider = new PhysicalFileProvider(env.ContentRootPath),
-                RequestPath = new PathString("")
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
         }
 
@@ -133,9 +128,6 @@ namespace SeenLive.Web
             
             builder.RegisterModule(new DataAccessModule(databaseSettings));
             builder.RegisterModule(new WebHandlerModule());
-            
-            // TODO register controllers
-            
         }
     }
 }

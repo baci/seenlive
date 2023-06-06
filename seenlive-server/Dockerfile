@@ -1,15 +1,15 @@
 # syntax=docker/dockerfile:1
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env-prod
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env-prod
 WORKDIR /app
-EXPOSE 5000
-EXPOSE 5001
+EXPOSE 80
+EXPOSE 443
 
 # Copy everything else and build
 COPY . .
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS run-env-prod
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS run-env-prod
 
 WORKDIR /app
 COPY --from=build-env-prod /app/out .

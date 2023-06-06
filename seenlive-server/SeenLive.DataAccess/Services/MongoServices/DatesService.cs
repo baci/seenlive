@@ -15,7 +15,7 @@ namespace SeenLive.DataAccess.Services.MongoServices
         {
             _dateEntries = context.Database.GetCollection<T>(settings.DatesCollectionName);
         }
-
+        
         public IEnumerable<IDateEntry> Get() =>
             _dateEntries.Find(entry => true).ToList().ConvertAll<IDateEntry>(x => x);
 
@@ -30,7 +30,7 @@ namespace SeenLive.DataAccess.Services.MongoServices
 
         public bool Remove(string id) =>
             _dateEntries.DeleteOne(entry => entry.Id == id).IsAcknowledged;
-
+        
         public IDateEntry Create(string date, string? location, string? remarks)
         {
             IDateEntry newEntry = new DateEntry { Date = date, Location = location, Remarks = remarks, Id = string.Empty };

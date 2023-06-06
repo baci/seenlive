@@ -1,0 +1,19 @@
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Compose environment
+        run: |
+          echo "DB_SERVER=${{ secrets.SEENLIVEDBSERVERPROD }}" >> .env
+          echo "DB_USERNAME=${{ secrets.SEENLIVEDBUSERNAMEPROD }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.SEENLIVEDBPASSWORDPROD }}" >> .env
+          echo "KESTREL_PASSWORD=${{ secrets.KESTREL_PASSWORD }}" >> .env
+
+      - name: Build and run Docker Compose
+        run: |
+          docker-compose up -d
+          
+      # TODO
