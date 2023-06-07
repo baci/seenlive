@@ -1,35 +1,42 @@
-using System;
 using System.Linq;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SeenLive.DataAccess;
 using SeenLive.DataAccess.Settings.MongoSettings;
+using SeenLive.Web.Filters;
 using SeenLive.Web.Handler;
 
 namespace SeenLive.Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        private const string CorsPolicyName = "CorsPolicy";
 
         public IConfiguration Configuration { get; }
 
         public ILifetimeScope AutofacContainer { get; private set; } = null!;
 
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options => options.EnableEndpointRouting = false);
+            services.AddMvcCore(options =>
+            {
+                options.Filters.Add(new ProducesAttribute("application/json-patch+json"));
+                options.Filters.Add(new ConsumesAttribute("application/json-patch+json"));
+                
+            });
             
             services.AddSwaggerGen(options =>
                 {
@@ -43,78 +50,63 @@ namespace SeenLive.Web
                             Contact = new OpenApiContact{ Name="Till Riemer", Email="seenlive@tillriemer.de" }
                         }
                     );
-                    options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-                    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                    {
-                        Name = "Authorization",
-                        Type = SecuritySchemeType.ApiKey,
-                        Scheme = "Bearer",
-                        In = ParameterLocation.Header,
-                        Description = "Basic Auth header using bearer scheme."
-                    });
-                    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                    {
-                        {
-                            new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme,
-                                    Id = "Bearer"
-                                },
-                                Scheme = "oauth2",
-                                Name = "Bearer",
-                                In = ParameterLocation.Header
-                            },
-                            Array.Empty<string>()
-                        }
-                    });
+                    
+                    options.CustomOperationIds(e => $"{e.RelativePath}");
+                    options.DescribeAllParametersInCamelCase();
+                    options.SchemaFilter<RequireNonNullablePropertiesSchemaFilter>();
+                    options.SupportNonNullableReferenceTypes();           
+                    options.UseAllOfToExtendReferenceSchemas();
+                    options.UseAllOfForInheritance();
+                    options.UseOneOfForPolymorphism();
+                    options.SelectSubTypesUsing(baseType =>
+                        baseType.Assembly.GetTypes().Where(type => type.IsSubclassOf(baseType)));
                 }
             );
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowOrigin", builder => builder.AllowAnyOrigin());
-                options.AddPolicy("AllowAnyMethod", builder => builder.AllowAnyMethod());
-                options.AddPolicy("AllowHeader", builder => builder.AllowAnyHeader());
-            });
-
-            // TODO add bearer authentication    
+            services.AddCors(
+                options => options.AddPolicy(
+                    name: CorsPolicyName,
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    }));
 
             services.AddControllers();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             AutofacContainer = app.ApplicationServices.GetAutofacRoot();
             
             app.UseRouting();
-            app.UseCors(option =>
+            app.UseCors(CorsPolicyName);
+            
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                option.AllowAnyOrigin();
-                option.AllowAnyMethod();
-                option.AllowAnyHeader();
-            });
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                                   ForwardedHeaders.XForwardedProto
+            }); 
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHsts(); // default is 30 days, change if needed
-            }
-            //app.UseHttpsRedirection();
             
             app.UseAuthentication();
-            app.UseAuthorization();
+            
+            //app.UseSession();
             
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/swagger/seenlive-v1/swagger.json", "SeenLive API");
+                options.SwaggerEndpoint("/swagger/seenlive-v1/swagger.json", "SeenLive API v1");
             });
+
+            app.UseCookiePolicy();
+
+            app.UseRouting();
             
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");

@@ -1,6 +1,4 @@
-using System;
 using System.IO;
-using System.Net;
 using System.Runtime.InteropServices;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
@@ -22,22 +20,6 @@ namespace SeenLive.Web
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
-                    webBuilder.UseKestrel(options =>
-                     {
-                         options.Listen(IPAddress.Loopback, 80);
-                         
-                         string? certPath = Environment.GetEnvironmentVariable("ASPNETCORE_Kestrel__Certificates__Default__Path");
-                         string? certPwd = Environment.GetEnvironmentVariable("ASPNETCORE_Kestrel__Certificates__Default__Password");
-                             
-                         if(certPath != null && certPwd != null)
-                         {
-                             options.Listen(IPAddress.Loopback, 443, listenOptions =>
-                             {
-                                 listenOptions.UseHttps(certPath, certPwd);
-                             });
-                         }
-                     });              
                 })
                 .ConfigureAppConfiguration(
                     (hostContext, builder) =>

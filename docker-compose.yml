@@ -2,6 +2,8 @@ version: "3.9"
 
 services:
   server-prod:
+    env_file:
+      - .env
     environment:
       - seenlive-db-server=${DB_SERVER}
       - seenlive-db-username=${DB_USERNAME}
