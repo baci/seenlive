@@ -15,6 +15,6 @@ namespace SeenLive.Core.Abstractions
 
         public bool Remove(string id);
 
-        IDateEntry Create(string date, string location, string remarks);
+        IDateEntry Create(string date, string? location, string? remarks);
     }
 }

@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SeenLive.Core.Abstractions;
 using SeenLive.Core.Abstractions.Models;
-using SeenLive.Core.DTOs;
 using SeenLive.Web.Handler.DTOs;
 using SeenLive.Web.Handler.Exceptions;
 
@@ -14,8 +12,7 @@ namespace SeenLive.Web.Handler.Bands
 {
     public class AddArtistEntryRequest : IRequest
     {
-        [Required]
-        public ArtistCreationRequestDTO? ArtistRequest { get; }
+        public ArtistCreationRequestDTO ArtistRequest { get; }
 
         public AddArtistEntryRequest(ArtistCreationRequestDTO artistRequest)
         {
@@ -33,7 +30,7 @@ namespace SeenLive.Web.Handler.Bands
                 _datesService = datesService;
             }
 
-            public Task<Unit> Handle(AddArtistEntryRequest request, CancellationToken cancellationToken)
+            public Task Handle(AddArtistEntryRequest request, CancellationToken cancellationToken)
             {
                 if (!ValidateRequestData(request))
                 {
@@ -58,8 +55,7 @@ namespace SeenLive.Web.Handler.Bands
 
             private static bool ValidateRequestData(AddArtistEntryRequest request)
             {
-                return request.ArtistRequest?.DateEntryRequests != null 
-                    && request.ArtistRequest.DateEntryRequests.Any()
+                return request.ArtistRequest.DateEntryRequests.Any()
                     && request.ArtistRequest.DateEntryRequests.All(dateEntry => !string.IsNullOrWhiteSpace(dateEntry.Date))
                     && !string.IsNullOrWhiteSpace(request.ArtistRequest.ArtistName);
             }

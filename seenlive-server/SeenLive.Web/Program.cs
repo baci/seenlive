@@ -1,8 +1,8 @@
-using System;
 using System.IO;
-using System.Net;
+using System.Runtime.InteropServices;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace SeenLive.Web
@@ -19,19 +19,20 @@ namespace SeenLive.Web
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseKestrel(options =>
-                     {
-                         options.Listen(IPAddress.Loopback, 5000);
-                         options.Listen(IPAddress.Loopback, 5001, listenOptions =>
-                         {
-                             string certPath = Environment.GetEnvironmentVariable("ASPNETCORE_Kestrel__Certificates__Default__Path");
-                             string certPwd = Environment.GetEnvironmentVariable("ASPNETCORE_Kestrel__Certificates__Default__Password");
-                             listenOptions.UseHttps(certPath, certPwd);
-                         });
-                     });
-                    webBuilder.UseIISIntegration();                    
-                });
+                })
+                .ConfigureAppConfiguration(
+                    (hostContext, builder) =>
+                    {
+                        builder.SetBasePath(Directory.GetCurrentDirectory());
+                        builder.AddJsonFile("appsettings.json", optional: true);
+                        builder.AddJsonFile(path: $"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true);
+                
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                        {
+                            builder.AddJsonFile("appsettings.linux.json", optional: true);
+                        }
+                    })
+            ;
     }
 }

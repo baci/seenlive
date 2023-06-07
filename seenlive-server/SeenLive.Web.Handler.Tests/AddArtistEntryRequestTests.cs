@@ -2,9 +2,7 @@ using FakeItEasy;
 using FluentAssertions;
 using SeenLive.Core.Abstractions;
 using SeenLive.Core.Abstractions.Models;
-using SeenLive.Core.DTOs;
 using SeenLive.Web.Handler.Bands;
-using SeenLive.Web.Handler.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,31 +23,12 @@ namespace SeenLive.Web.Handler.Tests
             {
                 new object[] { null!, null! },
                 new object[] { "test", new List<DateEntryCreationRequestDTO>() },
-                new object[] { "test", new List<DateEntryCreationRequestDTO> { new DateEntryCreationRequestDTO() } }
             };
 
         public AddArtistEntryRequestTests()
         {
             _artistService = A.Fake<IArtistService>();
             _datesService = A.Fake<IDatesService>();
-        }
-
-        [Theory]
-        [MemberData(nameof(InvalidArgumentsData))]
-        public async Task AddArtistEntry_MissingArgumentsInRequest_ThrowsInvalidArgument(string artistName, 
-            List<DateEntryCreationRequestDTO> dateEntries)
-        {
-            AddArtistEntryRequest.Handler handler = SetupHandler();
-
-            AddArtistEntryRequest request = new(new ArtistCreationRequestDTO
-            {
-                ArtistName = artistName, 
-                DateEntryRequests = dateEntries
-            });
-
-            Func<Task> func = async () => await handler.Handle(request, CancellationToken.None);
-
-            await func.Should().ThrowAsync<InvalidArgumentException>();
         }
 
         [Fact]
@@ -62,7 +41,7 @@ namespace SeenLive.Web.Handler.Tests
                 ArtistName = "test",
                 DateEntryRequests = new List<DateEntryCreationRequestDTO>
                 {
-                    new DateEntryCreationRequestDTO { Date = "myDate" }
+                    new DateEntryCreationRequestDTO { Date = "myDate", Location = string.Empty, Remarks = string.Empty }
                 }
             });
 
@@ -80,7 +59,7 @@ namespace SeenLive.Web.Handler.Tests
             await handler.Handle(request, CancellationToken.None);
 
             A.CallTo(_datesService).Where(call => call.Method.Name == nameof(_datesService.Create))
-                .MustHaveHappened(request.ArtistRequest!.DateEntryRequests.Count(), Times.Exactly);
+                .MustHaveHappened(request.ArtistRequest.DateEntryRequests.Count(), Times.Exactly);
             A.CallTo(_artistService).Where(call => call.Method.Name == nameof(_artistService.Create))
                 .MustHaveHappenedOnceExactly();
         }
@@ -96,7 +75,7 @@ namespace SeenLive.Web.Handler.Tests
             await handler.Handle(request, CancellationToken.None);
 
             A.CallTo(_datesService).Where(call => call.Method.Name == nameof(_datesService.Create))
-                .MustHaveHappened(request.ArtistRequest!.DateEntryRequests.Count(), Times.Exactly)
+                .MustHaveHappened(request.ArtistRequest.DateEntryRequests.Count(), Times.Exactly)
                 .Then(A.CallTo(artistEntry).Where(call => call.Method.Name == nameof(artistEntry.AddDateEntries))
                 .MustHaveHappenedOnceExactly())
                 .Then(A.CallTo(_artistService).Where(call => call.Method.Name == nameof(_artistService.Update))
@@ -106,7 +85,7 @@ namespace SeenLive.Web.Handler.Tests
         private IArtistEntry SetupArtistEntryInDb(AddArtistEntryRequest request)
         {
             IArtistEntry artistEntry = A.Fake<IArtistEntry>();
-            A.CallTo(() => artistEntry.ArtistName)!.Returns(request.ArtistRequest!.ArtistName);
+            A.CallTo(() => artistEntry.ArtistName).Returns(request.ArtistRequest.ArtistName);
             A.CallTo(() => _artistService.Get()).Returns(new[] { artistEntry });
             
             return artistEntry;
@@ -122,7 +101,7 @@ namespace SeenLive.Web.Handler.Tests
 
             A.CallTo(_datesService)
                 .Where(call => call.Method.Name == nameof(_datesService.Create))
-                .MustHaveHappened(request.ArtistRequest!.DateEntryRequests.Count(), Times.Exactly);
+                .MustHaveHappened(request.ArtistRequest.DateEntryRequests.Count(), Times.Exactly);
         }
 
         private static AddArtistEntryRequest CreateValidRequestWithOneDate()

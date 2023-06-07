@@ -1,10 +1,10 @@
-﻿namespace SeenLive.Core.DTOs
+﻿namespace SeenLive.Web.Handler.DTOs
 {
     public record DateEntryDTO
     {
-        public string Id { get; set; }
-        public string Date { get; set; }
-        public string Location { get; set; }
-        public string Remarks { get; set; }
+        public required string Id { get; set; }
+        public required string Date { get; set; }
+        public required string Location { get; set; }
+        public required string Remarks { get; set; }
     }
 }

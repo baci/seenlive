@@ -1,7 +1,7 @@
-﻿namespace SeenLive.Core.DTOs
+﻿namespace SeenLive.Web.Handler.DTOs
 {
     public record ArtistDeleteRequestDTO
     {
-        public string ArtistEntryId { get; set; }
+        public required string ArtistEntryId { get; set; }
     }
 }
