@@ -70,7 +70,7 @@ namespace SeenLive.Web
                         builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                     }));
 
-            services.AddControllers();
+            services.AddControllersWithViews();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -98,7 +98,7 @@ namespace SeenLive.Web
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/swagger/seenlive-v1/swagger.json", "SeenLive API v1");
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "SeenLive API v1");
             });
 
             app.UseCookiePolicy();

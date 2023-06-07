@@ -19,8 +19,6 @@ services:
       - 5001:443
     volumes:
       - ~/.aspnet/https:/app/https # TODO retrieve certificate from GitHub secret
-    networks:
-      - seenlive_network
 
   client-prod:
     build:
@@ -29,13 +27,5 @@ services:
     ports:
       - 3000:3000
       - 3001:3001
-    networks:
-      - seenlive_network
     depends_on: 
       - server-prod
-      
-networks:
-  seenlive_network:
-    name: seenlive_network
-    driver: bridge
-    external: false
