@@ -1,4 +1,4 @@
-![Frontend CI](https://github.com/baci/seenlive/workflows/Node.js%20CI/badge.svg?branch=master) ![Backend CI](https://github.com/baci/seenlive/workflows/.NET-Backend/badge.svg) [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
+![Frontend CI](https://github.com/baci/seenlive/workflows/Node.js%20Frontend%20CI/badge.svg?branch=master) ![Backend CI](https://github.com/baci/seenlive/workflows/.NET-Backend/badge.svg) [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
 
 # seenlive
 seenlive is single-page application that allows the user to track bands and concerts that they have been to. 
@@ -7,13 +7,19 @@ The Frontend is written in React / Typescript, the backend in ASP.NET Core and C
 
 # Installation / Execution
 
-## Requirements
+## Docker
+From workspace root: ```docker-compose up```
+The client will be available at localhost:3000. Swagger UI: localhost:5001/swagger
+
+## Manual
+
+### Requirements
 The following tools are required to compile and run seenlive locally:
 * NodeJS, NPM and Yarn (additional dependencies loaded from package definitions)
 * .NET 5.0
 * a MongoDB M0 Cluster running on some server
 
-## Web Server
+### Web Server
 * Execute from a terminal:
 ```
 cd seenlive-server
@@ -23,7 +29,7 @@ dotnet build --no-restore
 * Set some user-specific environment variables for seenlive-db-server, seenlive-db-username and seenlive-db-password with your MongoDB credentials
 * Run SeenLive.Server project
 
-## Web Client
+### Web Client
 Assumes that the server is running. Execute from a terminal:
 ```
 cd seenlive
