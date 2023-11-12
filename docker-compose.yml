@@ -5,9 +5,9 @@ services:
     env_file:
       - .env
     environment:
-      - seenlive-db-server=${DB_SERVER}
-      - seenlive-db-username=${DB_USERNAME}
-      - seenlive-db-password=${DB_PASSWORD}
+      - seenlive-db-server=${SEENLIVE_DB_SERVER}
+      - seenlive-db-username=${SEENLIVE_DB_USERNAME}
+      - seenlive-db-password=${SEENLIVE_DB_PASSWORD}
       - ASPNETCORE_URLS=https://+:443;http://+:80;
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${KESTREL_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/https/aspnetapp.pfx
