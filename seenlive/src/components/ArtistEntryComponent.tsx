@@ -47,10 +47,10 @@ const useStyles = makeStyles((theme: Theme) =>
 function useArtistsSlice() {
     const dispatch = useDispatch();
 
-    const deleteArtistEntry = (artistEntryId : string) =>
-        dispatch(DeleteArtistEntryThunk(artistEntryId)).then(_ => dispatch(GetArtistEntriesThunk()));
-    const deleteDateEntry = (artistId : string, dateId : string) =>
-        dispatch(DeleteDateEntryThunk({artistId, dateId})).then(_ => dispatch(GetArtistEntriesThunk()));
+    const deleteArtistEntry = (userId : string, artistEntryId : string) =>
+        dispatch(DeleteArtistEntryThunk({userId, artistEntryId})).then(_ => dispatch(GetArtistEntriesThunk(userId)));
+    const deleteDateEntry = (userId : string, artistId : string, dateId : string) =>
+        dispatch(DeleteDateEntryThunk({userId, artistId, dateId})).then(_ => dispatch(GetArtistEntriesThunk(userId)));
 
     return {deleteArtistEntry, deleteDateEntry};
 }
@@ -65,6 +65,7 @@ export interface ArtistEntryComponentProps {
 export default function ArtistEntryComponent(props: ArtistEntryComponentProps) {
     const classes = useStyles();
     const {deleteArtistEntry, deleteDateEntry} = useArtistsSlice();
+    const userId = "TestUserId"; // TODO Slice nutzen?
 
     const timesSeen = props.entry.dateEntries.length;
 
@@ -93,7 +94,7 @@ export default function ArtistEntryComponent(props: ArtistEntryComponentProps) {
 
                     <IconButton size="small" className={classes.button} onClick={(event) => {
                         event.stopPropagation();
-                        deleteArtistEntry(props.entry.id);
+                        deleteArtistEntry(userId, props.entry.id);
                     }} onFocus={(event) => event.stopPropagation()}>
                         <DeleteIcon color="secondary" fontSize="small" />
                     </IconButton>
@@ -116,7 +117,7 @@ export default function ArtistEntryComponent(props: ArtistEntryComponentProps) {
                                             /* todo(newEntry) */
                                         }}
                                         handleUserPressesDelete={(dateEntryId) => {
-                                            deleteDateEntry(props.entry.id, dateEntryId);
+                                            deleteDateEntry(userId, props.entry.id, dateEntryId);
                                         }}
                                     />
                                 </Grid>

@@ -1,49 +1,44 @@
 using FakeItEasy;
 using FluentAssertions;
 using SeenLive.Core.Abstractions;
-using SeenLive.Core.Abstractions.Models;
-using SeenLive.Web.Handler.Bands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SeenLive.Core.Abstractions.Entities;
+using SeenLive.DataAccess.Models;
 using SeenLive.Web.Handler.DTOs;
+using SeenLive.Web.Handler.Requests;
 using Xunit;
 
 namespace SeenLive.Web.Handler.Tests
 {
     public class AddArtistEntryRequestTests
     {
-        private readonly IArtistService _artistService;
-        private readonly IDatesService _datesService;
+        private readonly IArtistsRepository _artistsRepository = A.Fake<IArtistsRepository>();
+        private readonly IDatesRepository _datesRepository = A.Fake<IDatesRepository>();
+        private readonly IUserRepository _userRepository = A.Fake<IUserRepository>();
 
-        public static IEnumerable<object[]> InvalidArgumentsData => 
-            new []
-            {
-                new object[] { null!, null! },
-                new object[] { "test", new List<DateEntryCreationRequestDTO>() },
-            };
-
-        public AddArtistEntryRequestTests()
-        {
-            _artistService = A.Fake<IArtistService>();
-            _datesService = A.Fake<IDatesService>();
-        }
+        private const string TestUserId = "TestUserId";
 
         [Fact]
         public async Task AddArtistEntry_SingleDateEntryWithValidDate_DoesNotThrow()
         {
-            AddArtistEntryRequest.Handler handler = SetupHandler();
+            AddOrUpdateArtistEntryRequest.Handler handler = SetupHandler();
 
-            AddArtistEntryRequest request = new(new ArtistCreationRequestDTO
+            AddOrUpdateArtistEntryRequest request = new(new ArtistCreationRequestDTO
             {
+                UserId = TestUserId,
                 ArtistName = "test",
                 DateEntryRequests = new List<DateEntryCreationRequestDTO>
                 {
                     new DateEntryCreationRequestDTO { Date = "myDate", Location = string.Empty, Remarks = string.Empty }
                 }
             });
+
+            A.CallTo(() => _userRepository.Get(TestUserId))
+                .Returns(new UserEntity { Id = TestUserId, Username = TestUserId, ArtistEntryIDs = new List<string>{request.ArtistRequest.ArtistName} });
 
             Func<Task> func = async () => await handler.Handle(request, CancellationToken.None);
 
@@ -53,61 +48,72 @@ namespace SeenLive.Web.Handler.Tests
         [Fact]
         public async Task AddArtistEntry_ArtistNotFoundInDb_ArtistGetsCreatedInDb()
         {
-            AddArtistEntryRequest.Handler handler = SetupHandler();
-            AddArtistEntryRequest request = CreateValidRequestWithOneDate();
+            AddOrUpdateArtistEntryRequest.Handler handler = SetupHandler();
+            AddOrUpdateArtistEntryRequest request = CreateValidRequestWithOneDate();
+            
+            A.CallTo(() => _userRepository.Get(TestUserId))
+                .Returns(new UserEntity { Id = TestUserId, Username = TestUserId, ArtistEntryIDs = new List<string>{request.ArtistRequest.ArtistName} });
 
             await handler.Handle(request, CancellationToken.None);
 
-            A.CallTo(_datesService).Where(call => call.Method.Name == nameof(_datesService.Create))
+            A.CallTo(() => _datesRepository.Create(A<string>._, A<string>._, A<string>._))
                 .MustHaveHappened(request.ArtistRequest.DateEntryRequests.Count(), Times.Exactly);
-            A.CallTo(_artistService).Where(call => call.Method.Name == nameof(_artistService.Create))
+            A.CallTo(() => _artistsRepository.Create(A<string>._, A<string>._, A<IEnumerable<string>>._))
                 .MustHaveHappenedOnceExactly();
         }
 
         [Fact]
         public async Task AddArtistEntry_ArtistFoundInDb_ArtistGetsUpdatedInDbWithDates()
         {
-            AddArtistEntryRequest.Handler handler = SetupHandler();
-            AddArtistEntryRequest request = CreateValidRequestWithOneDate();
+            AddOrUpdateArtistEntryRequest.Handler handler = SetupHandler();
+            AddOrUpdateArtistEntryRequest request = CreateValidRequestWithOneDate();
 
-            IArtistEntry artistEntry = SetupArtistEntryInDb(request);
+            A.CallTo(() => _userRepository.Get(TestUserId))
+                .Returns(new UserEntity { Id = TestUserId, Username = TestUserId, ArtistEntryIDs = new List<string>{request.ArtistRequest.ArtistName} });
+
+            IArtistEntity artistEntity = SetupArtistEntryInDb(request);
 
             await handler.Handle(request, CancellationToken.None);
 
-            A.CallTo(_datesService).Where(call => call.Method.Name == nameof(_datesService.Create))
+            A.CallTo(() => _datesRepository.Create(A<string>._, A<string>._, A<string>._))
                 .MustHaveHappened(request.ArtistRequest.DateEntryRequests.Count(), Times.Exactly)
-                .Then(A.CallTo(artistEntry).Where(call => call.Method.Name == nameof(artistEntry.AddDateEntries))
+                .Then(A.CallTo(artistEntity).Where(call => call.Method.Name == nameof(artistEntity.AddDateEntries))
                 .MustHaveHappenedOnceExactly())
-                .Then(A.CallTo(_artistService).Where(call => call.Method.Name == nameof(_artistService.Update))
+                .Then(A.CallTo(_artistsRepository).Where(call => call.Method.Name == nameof(_artistsRepository.Update))
                 .MustHaveHappenedOnceExactly());
         }
 
-        private IArtistEntry SetupArtistEntryInDb(AddArtistEntryRequest request)
+        private IArtistEntity SetupArtistEntryInDb(AddOrUpdateArtistEntryRequest request)
         {
-            IArtistEntry artistEntry = A.Fake<IArtistEntry>();
-            A.CallTo(() => artistEntry.ArtistName).Returns(request.ArtistRequest.ArtistName);
-            A.CallTo(() => _artistService.Get()).Returns(new[] { artistEntry });
+            IArtistEntity artistEntity = A.Fake<IArtistEntity>();
+            A.CallTo(() => artistEntity.ArtistName).Returns(request.ArtistRequest.ArtistName);
+            A.CallTo(() => artistEntity.Id).Returns(request.ArtistRequest.ArtistName);
+            A.CallTo(() => _artistsRepository.Get()).Returns(new[] { artistEntity });
             
-            return artistEntry;
+            return artistEntity;
         }
 
         [Fact]
         public async Task AddArtistEntry_MultipleEqualDates_DatesStillGetCreatedInDb()
         {
-            AddArtistEntryRequest.Handler handler = SetupHandler();
-            AddArtistEntryRequest request = CreateValidRequestWithTwoEqualDates();
+            AddOrUpdateArtistEntryRequest.Handler handler = SetupHandler();
+            
+            AddOrUpdateArtistEntryRequest request = CreateValidRequestWithTwoEqualDates();
+            A.CallTo(() => _userRepository.Get(TestUserId))
+                .Returns(new UserEntity { Id = TestUserId, Username = TestUserId, ArtistEntryIDs = new List<string>{request.ArtistRequest.ArtistName} });
 
             await handler.Handle(request, CancellationToken.None);
 
-            A.CallTo(_datesService)
-                .Where(call => call.Method.Name == nameof(_datesService.Create))
+            A.CallTo(_datesRepository)
+                .Where(call => call.Method.Name == nameof(_datesRepository.Create))
                 .MustHaveHappened(request.ArtistRequest.DateEntryRequests.Count(), Times.Exactly);
         }
 
-        private static AddArtistEntryRequest CreateValidRequestWithOneDate()
+        private static AddOrUpdateArtistEntryRequest CreateValidRequestWithOneDate()
         {
-            return new AddArtistEntryRequest(new ArtistCreationRequestDTO
+            return new AddOrUpdateArtistEntryRequest(new ArtistCreationRequestDTO
             { 
+                UserId = TestUserId,
                 ArtistName = "TestArtist", 
                 DateEntryRequests = new List<DateEntryCreationRequestDTO>
                 { 
@@ -121,10 +127,11 @@ namespace SeenLive.Web.Handler.Tests
             });
         }
 
-        private static AddArtistEntryRequest CreateValidRequestWithTwoEqualDates()
+        private static AddOrUpdateArtistEntryRequest CreateValidRequestWithTwoEqualDates()
         {
-            return new AddArtistEntryRequest(new ArtistCreationRequestDTO
+            return new AddOrUpdateArtistEntryRequest(new ArtistCreationRequestDTO
             {
+                UserId = TestUserId,
                 ArtistName = "TestArtist",
                 DateEntryRequests = new List<DateEntryCreationRequestDTO>
                 {
@@ -144,19 +151,19 @@ namespace SeenLive.Web.Handler.Tests
             });
         }
 
-        private AddArtistEntryRequest.Handler SetupHandler()
+        private AddOrUpdateArtistEntryRequest.Handler SetupHandler()
         {
-            A.CallTo(_artistService)
-                .Where(call => call.Method.Name == nameof(_artistService.Create))
-                .WithReturnType<IArtistEntry>()
-                .Returns(A.Fake<IArtistEntry>());
+            A.CallTo(_artistsRepository)
+                .Where(call => call.Method.Name == nameof(_artistsRepository.Create))
+                .WithReturnType<IArtistEntity>()
+                .Returns(A.Fake<IArtistEntity>());
 
-            A.CallTo(_datesService)
-                .Where(call => call.Method.Name == nameof(_datesService.Create))
-                .WithReturnType<IDateEntry>()
-                .Returns(A.Fake<IDateEntry>());
-
-            return new(_artistService, _datesService);
+            A.CallTo(_datesRepository)
+                .Where(call => call.Method.Name == nameof(_datesRepository.Create))
+                .WithReturnType<IDateEntity>()
+                .Returns(A.Fake<IDateEntity>());
+            
+            return new AddOrUpdateArtistEntryRequest.Handler(_artistsRepository, _datesRepository, _userRepository);
         }
     }
 }

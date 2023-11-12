@@ -8,7 +8,7 @@ The Frontend is written in React / Typescript, the backend in ASP.NET Core and C
 # Installation / Execution
 
 ## Docker
-From workspace root: ```docker-compose up```
+From workspace root: ```docker-compose build``` / ```docker-compose up```
 The client will be available at localhost:3000. Swagger UI: localhost:5001/swagger
 
 ## Manual
@@ -16,7 +16,7 @@ The client will be available at localhost:3000. Swagger UI: localhost:5001/swagg
 ### Requirements
 The following tools are required to compile and run seenlive locally:
 * NodeJS, NPM and Yarn (additional dependencies loaded from package definitions)
-* .NET 5.0
+* .NET 7.0
 * a MongoDB M0 Cluster running on some server
 
 ### Web Server

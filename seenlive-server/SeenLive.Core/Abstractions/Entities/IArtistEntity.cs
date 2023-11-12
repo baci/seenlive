@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace SeenLive.Core.Abstractions.Models
+namespace SeenLive.Core.Abstractions.Entities
 {
-    public interface IArtistEntry
+    public interface IArtistEntity
     {
         public string Id { get; set; }
 

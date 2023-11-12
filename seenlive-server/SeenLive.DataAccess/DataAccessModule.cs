@@ -20,8 +20,8 @@ namespace SeenLive.DataAccess
             base.Load(builder);
 
             // TODO db services singleinstance or per dependency?
-            builder.RegisterType<ArtistService<ArtistEntry>>().As<IArtistService>().SingleInstance();
-            builder.RegisterType<DatesService<DateEntry>>().As<IDatesService>().SingleInstance();
+            builder.RegisterType<ArtistsRepository<ArtistEntity>>().As<IArtistsRepository>().SingleInstance();
+            builder.RegisterType<DatesRepository<DateEntity>>().As<IDatesRepository>().SingleInstance();
             
             // database setup with appsettings configuration
             builder.RegisterInstance(_databaseSettings).As<ISeenLiveDatabaseSettings>().SingleInstance();

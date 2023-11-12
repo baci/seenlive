@@ -1,6 +1,6 @@
-﻿namespace SeenLive.Core.Abstractions.Models
+﻿namespace SeenLive.Core.Abstractions.Entities
 {
-    public interface IDateEntry
+    public interface IDateEntity
     {        
         public string Id { get; set; }
         public string Date { get; set; }

@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SeenLive.Web.Handler.Bands;
 using SeenLive.Web.Handler.DTOs;
+using SeenLive.Web.Handler.Requests;
 
 namespace SeenLive.Web.Controllers
 {
@@ -23,13 +23,16 @@ namespace SeenLive.Web.Controllers
         }
 
         [HttpPost]
-        public async Task <ActionResult<IEnumerable<ArtistResponseDTO>>> AddArtistEntry(ArtistCreationRequestDTO artistRequest)
+        public async Task<ActionResult<IEnumerable<ArtistResponseDTO>>> AddArtistEntry(ArtistCreationRequestDTO artistRequest)
         {
             try
             {
-                await _mediator.Send(new AddArtistEntryRequest(artistRequest));
+                await _mediator.Send(new AddOrUpdateArtistEntryRequest(artistRequest));
 
-                IEnumerable<ArtistResponseDTO> result = await _mediator.Send(new GetArtistEntriesRequest());
+                IEnumerable<ArtistResponseDTO> result = await _mediator.Send(new GetArtistEntriesRequest
+                {
+                    UserId = artistRequest.UserId
+                });
 
                 return Ok(result);
             }
@@ -45,7 +48,12 @@ namespace SeenLive.Web.Controllers
         {
             try
             {
-                bool deletedDate = await _mediator.Send(new DeleteDateEntryRequest(){ArtistId = deletionRequest.ArtistId, DateId = deletionRequest.DateId});
+                bool deletedDate = await _mediator.Send(new DeleteDateEntryRequest
+                {
+                    ArtistId = deletionRequest.ArtistId, 
+                    DateId = deletionRequest.DateId,
+                    UserId = deletionRequest.UserId
+                });
                 
                 return deletedDate
                     ? Ok()
@@ -63,7 +71,11 @@ namespace SeenLive.Web.Controllers
         {
             try
             {
-                bool deletedArtist = await _mediator.Send(new DeleteArtistEntryRequest { ArtistEntryId = request.ArtistEntryId });
+                bool deletedArtist = await _mediator.Send(new DeleteArtistEntryRequest
+                {
+                    ArtistEntryId = request.ArtistEntryId,
+                    UserId = request.UserId,
+                });
                 
                 return deletedArtist
                     ? Ok() 
@@ -77,11 +89,14 @@ namespace SeenLive.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ArtistResponseDTO>>> GetArtistEntries()
+        public async Task<ActionResult<IEnumerable<ArtistResponseDTO>>> GetArtistEntries(string userId)
         {
             try
             {
-                IEnumerable<ArtistResponseDTO> ret = await _mediator.Send(new GetArtistEntriesRequest());
+                IEnumerable<ArtistResponseDTO> ret = await _mediator.Send(new GetArtistEntriesRequest
+                {
+                    UserId = userId
+                });
                 
                 return Ok(ret);
             }

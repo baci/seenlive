@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using MediatR.Extensions.Autofac.DependencyInjection.Builder;
 using MediatR.Extensions.Autofac.DependencyInjection;
-using SeenLive.Web.Handler.Bands;
+using SeenLive.Web.Handler.Requests;
 
 namespace SeenLive.Web.Handler
 {
@@ -12,7 +12,7 @@ namespace SeenLive.Web.Handler
             base.Load(builder);
 
             var configuration = MediatRConfigurationBuilder
-            .Create(typeof(AddArtistEntryRequest).Assembly)
+            .Create(typeof(AddOrUpdateArtistEntryRequest).Assembly)
             .WithAllOpenGenericHandlerTypesRegistered()
             .Build();
 

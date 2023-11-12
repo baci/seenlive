@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SeenLive.DataAccess\SeenLive.DataAccess.csproj" />
     <ProjectReference Include="..\SeenLive.Web.Handler\SeenLive.Web.Handler.csproj" />
   </ItemGroup>
 

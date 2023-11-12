@@ -2,14 +2,16 @@ import axios from 'axios';
 import ArtistCreationRequestDTO from '../entities/ArtistCreationRequestDTO';
 import DateEntryDeleteRequestDTO from '../entities/DateEntryDeleteRequestDTO';
 import { AuthHeader } from './AuthHeader';
+import ArtistDeleteRequestDTO from '../entities/ArtistDeleteRequestDTO';
 
 const baseUrl = 'https://localhost:5001/api/';
 
-function GetApiConfiguration(){
+function GetApiConfiguration(params? : string[]){
     return {
         baseURL: baseUrl,
         transformRequest: [(data) => JSON.stringify(data)],
-        headers: AuthHeader()
+        headers: AuthHeader(),
+        params: params
     };
 }
 
@@ -21,9 +23,9 @@ export async function AddArtistEntry(entry : ArtistCreationRequestDTO){
     return response.data;
 }
 
-export async function DeleteArtistEntry(artistEntryId : string){
+export async function DeleteArtistEntry(request : ArtistDeleteRequestDTO){
 
-    let response = await instance.post('Band/DeleteArtistEntry', { artistEntryId }, GetApiConfiguration());
+    let response = await instance.post('Band/DeleteArtistEntry', request, GetApiConfiguration());
     return response.data;
 }
 
@@ -32,7 +34,7 @@ export async function DeleteDateEntry(request: DateEntryDeleteRequestDTO){
     return response.data;
 }
 
-export async function GetArtistEntries() {
-    let response = await instance.get('Band/GetArtistEntries', GetApiConfiguration());
+export async function GetArtistEntries(userId: string) {
+    let response = await instance.get('Band/GetArtistEntries', GetApiConfiguration([userId]));
     return response.data;
 }

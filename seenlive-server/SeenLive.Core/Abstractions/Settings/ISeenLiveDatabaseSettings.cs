@@ -4,6 +4,7 @@
     {
         string ArtistsCollectionName { get; set; }
         string DatesCollectionName { get; set; }
+        string UsersCollectionName { get; set; }
         string DatabaseName { get; set; }
         string BaseConnectionString { get; set; }
         string ConnectionString { get; }

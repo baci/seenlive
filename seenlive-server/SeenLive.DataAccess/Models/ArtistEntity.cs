@@ -1,12 +1,12 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using SeenLive.Core.Abstractions.Models;
 using System.Collections.Generic;
 using System.Linq;
+using SeenLive.Core.Abstractions.Entities;
 
 namespace SeenLive.DataAccess.Models
 {
-    public class ArtistEntry : IArtistEntry
+    public class ArtistEntity : IArtistEntity
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -16,7 +16,7 @@ namespace SeenLive.DataAccess.Models
 
         public IList<string> DateEntryIDs { get; set; }
 
-        public ArtistEntry(string id, string artistName, IEnumerable<string> dateEntryIDs)
+        public ArtistEntity(string id, string artistName, IEnumerable<string> dateEntryIDs)
         {            
             Id = id;
             ArtistName = artistName;

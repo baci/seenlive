@@ -51,11 +51,14 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
     const [date, setDate] = React.useState(null as Date | null);
     const [location, setLocation] = React.useState('');
     const [remarks, setRemarks] = React.useState('');
+    const userId = "TestUserId"; // TODO Slice nutzen?
+
 
     const handleOk = () => {
         const dateString: string = (date ? date : new Date()).toLocaleDateString();
 
         const newEntry: ArtistCreationRequestDTO = {
+            userId,
             artistName,
             dateEntryRequests: [{ date: dateString, location, remarks }] as DateEntryCreationRequestDTO[],
         };

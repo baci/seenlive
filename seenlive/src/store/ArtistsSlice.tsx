@@ -3,6 +3,7 @@ import ArtistEntry from '../entities/ArtistEntry';
 import { AddArtistEntry, DeleteArtistEntry, DeleteDateEntry, GetArtistEntries } from '../api/BandApi';
 import ArtistCreationRequestDTO from '../entities/ArtistCreationRequestDTO';
 import DateEntryDeleteRequestDTO from '../entities/DateEntryDeleteRequestDTO';
+import ArtistDeleteRequestDTO from '../entities/ArtistDeleteRequestDTO';
 
 export interface ArtistsState{
     nextArtistId : number;
@@ -24,8 +25,8 @@ export const AddArtistEntryThunk = createAsyncThunk(
 
 export const DeleteArtistEntryThunk = createAsyncThunk(
     'api/Band/DeleteArtistEntry',
-    async (artistEntryId: string) => {
-        const result = await DeleteArtistEntry(artistEntryId);
+    async (request : ArtistDeleteRequestDTO) => {
+        const result = await DeleteArtistEntry(request);
         return result;
     }
 );
@@ -40,8 +41,8 @@ export const DeleteDateEntryThunk = createAsyncThunk(
 
 export const GetArtistEntriesThunk = createAsyncThunk(
     'api/Band/GetArtistEntries',
-    async () => {
-        const newArtistEntries = await GetArtistEntries();
+    async (userId : string) => {
+        const newArtistEntries = await GetArtistEntries(userId);
         return (newArtistEntries as ArtistEntry[]);
     }
 );

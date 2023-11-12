@@ -6,34 +6,34 @@ using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using SeenLive.Core.Abstractions;
-using SeenLive.Core.Abstractions.Models;
-using SeenLive.Web.Handler.Bands;
+using SeenLive.Core.Abstractions.Entities;
+using SeenLive.DataAccess.Models;
 using SeenLive.Web.Handler.DTOs;
+using SeenLive.Web.Handler.Requests;
 using Xunit;
 
 namespace SeenLive.Web.Handler.Tests
 {
     public class GetArtistEntriesRequestTests
     {
-        private readonly IArtistService _artistService;
-        private readonly IDatesService _datesService;
-
-        public GetArtistEntriesRequestTests()
-        {
-            _artistService = A.Fake<IArtistService>();
-            _datesService = A.Fake<IDatesService>();
-        }
+        private readonly IArtistsRepository _artistsRepository = A.Fake<IArtistsRepository>();
+        private readonly IDatesRepository _datesRepository = A.Fake<IDatesRepository>();
+        private readonly IUserRepository _userRepository = A.Fake<IUserRepository>();
 
         [Theory]
         [MemberData(nameof(EntriesInDb))]
-        public async Task GetArtistEntries_ForEntriesInDb_ReturnsEntriesWithTheirDateEntries(IArtistEntry[] artistEntries, IDateEntry[] dateEntries)
+        public async Task GetArtistEntries_ForEntriesInDb_ReturnsEntriesWithTheirDateEntries(IArtistEntity[] artistEntries, IDateEntity[] dateEntries)
         {
-            GetArtistEntriesRequest request = new GetArtistEntriesRequest();
+            const string TestUserId = "test";
+            GetArtistEntriesRequest request = new GetArtistEntriesRequest {UserId = TestUserId};
 
             GetArtistEntriesRequest.Handler handler = SetupHandler();
+            
+            A.CallTo(() => _userRepository.Get(TestUserId))
+                .Returns(new UserEntity {Id = TestUserId, Username = TestUserId, ArtistEntryIDs = artistEntries.Select(x => x.Id).ToList()});
 
-            A.CallTo(() => _artistService.Get()).Returns(artistEntries);
-            A.CallTo(() => _datesService.Get()).ReturnsNextFromSequence(dateEntries);
+            A.CallTo(() => _artistsRepository.Get()).Returns(artistEntries);
+            A.CallTo(() => _datesRepository.Get()).ReturnsNextFromSequence(dateEntries);
 
             IEnumerable<ArtistResponseDTO> response = (await handler.Handle(request, CancellationToken.None)).ToArray();
 
@@ -44,28 +44,28 @@ namespace SeenLive.Web.Handler.Tests
         public static IEnumerable<object[]> EntriesInDb => 
             new []
             {
-                new object[] { Array.Empty<IArtistEntry>(), Array.Empty<IDateEntry>() },
-                new object[] { new [] { GetFakeArtistEntry(1) }, new [] { A.Fake<IDateEntry>() } },
+                new object[] { Array.Empty<IArtistEntity>(), Array.Empty<IDateEntity>() },
+                new object[] { new [] { GetFakeArtistEntry(1) }, new [] { A.Fake<IDateEntity>() } },
                 new object[] { 
                     new []{GetFakeArtistEntry(1), GetFakeArtistEntry(2)}, 
-                    new []{A.Fake<IDateEntry>(), A.Fake<IDateEntry>(), A.Fake<IDateEntry>()} 
+                    new []{A.Fake<IDateEntity>(), A.Fake<IDateEntity>(), A.Fake<IDateEntity>()} 
                 }
             };
 
-        private static IArtistEntry GetFakeArtistEntry(int amountOfDates)
+        private static IArtistEntity GetFakeArtistEntry(int amountOfDates)
         {
-            IArtistEntry artistEntry = A.Fake<IArtistEntry>();
-            A.CallTo(() => artistEntry.DateEntryIDs)
+            IArtistEntity artistEntity = A.Fake<IArtistEntity>();
+            A.CallTo(() => artistEntity.DateEntryIDs)
                 .Returns(Enumerable.Range(0, amountOfDates)
                     .Select(dateId => $"DateEntry-{dateId}")
                     .ToList());
 
-            return artistEntry;
+            return artistEntity;
         }
 
         private GetArtistEntriesRequest.Handler SetupHandler()
         {
-            return new GetArtistEntriesRequest.Handler(_artistService, _datesService);
+            return new GetArtistEntriesRequest.Handler(_artistsRepository, _datesRepository, _userRepository);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace SeenLive.DataAccess.Settings.MongoSettings
 
         public required string ArtistsCollectionName { get; set; }
         public required string DatesCollectionName { get; set; }
+        public required string UsersCollectionName { get; set; }
         public required string DatabaseName { get; set; }
         public required string BaseConnectionString { get; set; }
 

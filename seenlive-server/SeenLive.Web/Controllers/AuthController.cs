@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using SeenLive.Core.Abstractions;
 
 namespace SeenLive.Web.Controllers
 {
@@ -6,11 +8,21 @@ namespace SeenLive.Web.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        //[HttpPost]
-        //public IActionResult Authorize(string username, string password)
-        //{
-        //    // TODO
-        //    return NotFound();
-        //}
+        private readonly IUserRepository _userRepository;
+
+        public AuthController(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
+        [HttpPost]
+        public Task<IActionResult> Authorize(string username, string password)
+        {
+            var user = _userRepository.Create(string.Empty, username);
+            
+            // TODO: Implement authentication
+            
+            return Task.FromResult((IActionResult)Ok());
+        }
     }
 }

@@ -4,30 +4,25 @@ using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using SeenLive.Core.Abstractions;
-using SeenLive.Core.Abstractions.Models;
-using SeenLive.Web.Handler.Bands;
+using SeenLive.Core.Abstractions.Entities;
+using SeenLive.Web.Handler.Requests;
 using Xunit;
 
 namespace SeenLive.Web.Handler.Tests
 {
     public class DeleteDateEntryRequestTests
     {
-        private readonly IArtistService _artistService;
-        private readonly IDatesService _datesService;
-
-        public DeleteDateEntryRequestTests()
-        {
-            _artistService = A.Fake<IArtistService>();
-            _datesService = A.Fake<IDatesService>();
-        }
+        private readonly IArtistsRepository _artistsRepository = A.Fake<IArtistsRepository>();
+        private readonly IDatesRepository _datesRepository = A.Fake<IDatesRepository>();
 
         [Fact]
         public async Task DeleteDateEntry_ArtistNotFound_DoesNotDeleteAnything()
         {
-            DeleteDateEntryRequest request = new DeleteDateEntryRequest();
+            DeleteDateEntryRequest request = new DeleteDateEntryRequest
+                { UserId = "test", ArtistId = "test", DateId = "test" };
 
             DeleteDateEntryRequest.Handler handler = SetupHandler();
-            A.CallTo(_artistService).WithReturnType<IArtistEntry?>().Returns(null);
+            A.CallTo(_artistsRepository).WithReturnType<IArtistEntity?>().Returns(null);
 
             bool res = await handler.Handle(request, CancellationToken.None);
 
@@ -39,14 +34,14 @@ namespace SeenLive.Web.Handler.Tests
         {
             const string NoKnownDateId = "noKnownDate";
             
-            DeleteDateEntryRequest request = new DeleteDateEntryRequest {ArtistId = "Artist-1", DateId = NoKnownDateId};
+            DeleteDateEntryRequest request = new DeleteDateEntryRequest {ArtistId = "Artist-1", DateId = NoKnownDateId, UserId = "test"};
             DeleteDateEntryRequest.Handler handler = SetupHandler();
             FakeArtistWithoutDates(request.ArtistId);
 
             bool res = await handler.Handle(request, CancellationToken.None);
 
             res.Should().BeFalse();
-            A.CallTo(() => _datesService.Remove(NoKnownDateId)).MustNotHaveHappened();
+            A.CallTo(() => _datesRepository.Remove(NoKnownDateId)).MustNotHaveHappened();
         }
 
         [Fact]
@@ -54,16 +49,16 @@ namespace SeenLive.Web.Handler.Tests
         {
             const string DateToDeleteId = "DateEntry-1";
             
-            DeleteDateEntryRequest request = new DeleteDateEntryRequest { ArtistId = "Artist-1", DateId = DateToDeleteId };
+            DeleteDateEntryRequest request = new DeleteDateEntryRequest { ArtistId = "Artist-1", DateId = DateToDeleteId, UserId = "test"};
             DeleteDateEntryRequest.Handler handler = SetupHandler();
-            IArtistEntry artistEntry = FakeArtistWithTwoDates(DateToDeleteId, request.ArtistId);
+            IArtistEntity artistEntity = FakeArtistWithTwoDates(DateToDeleteId, request.ArtistId);
 
             bool res = await handler.Handle(request, CancellationToken.None);
 
             res.Should().BeTrue();
-            A.CallTo(() => _datesService.Remove(DateToDeleteId)).MustHaveHappenedOnceExactly().Then(
-            A.CallTo(() => _artistService.Update(artistEntry.Id, artistEntry)).MustHaveHappenedOnceExactly());
-            artistEntry.DateEntryIDs.Should().HaveCount(1);
+            A.CallTo(() => _datesRepository.Remove(DateToDeleteId)).MustHaveHappenedOnceExactly().Then(
+            A.CallTo(() => _artistsRepository.Update(artistEntity.Id, artistEntity)).MustHaveHappenedOnceExactly());
+            artistEntity.DateEntryIDs.Should().HaveCount(1);
         }
 
         [Fact]
@@ -71,51 +66,51 @@ namespace SeenLive.Web.Handler.Tests
         {
             const string DateToDeleteId = "DateEntry-1";
             
-            DeleteDateEntryRequest request = new DeleteDateEntryRequest { ArtistId = "Artist-1", DateId = DateToDeleteId };
+            DeleteDateEntryRequest request = new DeleteDateEntryRequest { ArtistId = "Artist-1", DateId = DateToDeleteId, UserId = "test"};
             DeleteDateEntryRequest.Handler handler = SetupHandler();
-            IArtistEntry artistEntry = FakeArtistWithSingleDate(DateToDeleteId, request.ArtistId);
+            IArtistEntity artistEntity = FakeArtistWithSingleDate(DateToDeleteId, request.ArtistId);
 
             bool res = await handler.Handle(request, CancellationToken.None);
 
             res.Should().BeTrue();
-            A.CallTo(() => _datesService.Remove(DateToDeleteId)).MustHaveHappenedOnceExactly().Then(
-                A.CallTo(() => _artistService.Remove(artistEntry.Id)).MustHaveHappenedOnceExactly());
+            A.CallTo(() => _datesRepository.Remove(DateToDeleteId)).MustHaveHappenedOnceExactly().Then(
+                A.CallTo(() => _artistsRepository.Remove(artistEntity.Id)).MustHaveHappenedOnceExactly());
         }
 
         private void FakeArtistWithoutDates(string artistId)
         {
-            IArtistEntry artistEntry = A.Fake<IArtistEntry>();
-            A.CallTo(() => artistEntry.Id).Returns("Artist-1");
-            A.CallTo(() => _artistService.Get(artistId)).Returns(artistEntry);
+            IArtistEntity artistEntity = A.Fake<IArtistEntity>();
+            A.CallTo(() => artistEntity.Id).Returns("Artist-1");
+            A.CallTo(() => _artistsRepository.Get(artistId)).Returns(artistEntity);
         }
 
-        private IArtistEntry FakeArtistWithTwoDates(string dateToDeleteId, string artistId)
+        private IArtistEntity FakeArtistWithTwoDates(string dateToDeleteId, string artistId)
         {
-            IArtistEntry artistEntry = A.Fake<IArtistEntry>();
-            A.CallTo(() => artistEntry.Id).Returns("Artist-1");
-            A.CallTo(() => artistEntry.DateEntryIDs).Returns(new List<string> { dateToDeleteId, "DateEntry-2" });
-            A.CallTo(() => _artistService.Get(artistId)).Returns(artistEntry);
-            return artistEntry;
+            IArtistEntity artistEntity = A.Fake<IArtistEntity>();
+            A.CallTo(() => artistEntity.Id).Returns("Artist-1");
+            A.CallTo(() => artistEntity.DateEntryIDs).Returns(new List<string> { dateToDeleteId, "DateEntry-2" });
+            A.CallTo(() => _artistsRepository.Get(artistId)).Returns(artistEntity);
+            return artistEntity;
         }
 
-        private IArtistEntry FakeArtistWithSingleDate(string dateToDeleteId, string artistId)
+        private IArtistEntity FakeArtistWithSingleDate(string dateToDeleteId, string artistId)
         {
-            IArtistEntry artistEntry = A.Fake<IArtistEntry>();
-            A.CallTo(() => artistEntry.Id).Returns("Artist-1");
-            A.CallTo(() => artistEntry.DateEntryIDs).Returns(new List<string> { dateToDeleteId });
-            A.CallTo(() => _artistService.Get(artistId)).Returns(artistEntry);
-            return artistEntry;
+            IArtistEntity artistEntity = A.Fake<IArtistEntity>();
+            A.CallTo(() => artistEntity.Id).Returns("Artist-1");
+            A.CallTo(() => artistEntity.DateEntryIDs).Returns(new List<string> { dateToDeleteId });
+            A.CallTo(() => _artistsRepository.Get(artistId)).Returns(artistEntity);
+            return artistEntity;
         }
 
         private DeleteDateEntryRequest.Handler SetupHandler()
         {
-            A.CallTo(_artistService).Where(call => call.Method.Name == nameof(_artistService.Remove))
+            A.CallTo(_artistsRepository).Where(call => call.Method.Name == nameof(_artistsRepository.Remove))
                 .WithReturnType<bool>().Returns(true);
             
-            A.CallTo(_datesService).Where(call => call.Method.Name == nameof(_datesService.Remove))
+            A.CallTo(_datesRepository).Where(call => call.Method.Name == nameof(_datesRepository.Remove))
                 .WithReturnType<bool>().Returns(true);
             
-            return new DeleteDateEntryRequest.Handler(_artistService, _datesService);
+            return new DeleteDateEntryRequest.Handler(_artistsRepository, _datesRepository, A.Fake<IUserRepository>());
         }
     }
 }
