@@ -13,12 +13,14 @@ import {
 } from '@material-ui/pickers';
 import { TextField } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 import { UIState, UISlice, selectUIState } from '../store/UISlice';
 import { RootState } from '../reducers/RootReducer';
 import { AddArtistEntryThunk } from '../store/ArtistsSlice';
 import { PROMPT_ADD_ARTIST } from '../actions/actions';
 import ArtistCreationRequestDTO from '../entities/ArtistCreationRequestDTO';
 import DateEntryCreationRequestDTO from '../entities/DateEntryCreationRequestDTO';
+import { AnyAction } from 'redux';
 
 export interface AddArtistEntryProps {
     classes: Record<'paper', string>;
@@ -27,7 +29,7 @@ export interface AddArtistEntryProps {
 }
 
 function useUISlice(){
-    const dispatch = useDispatch();
+    const dispatch: ThunkDispatch<RootState, void, AnyAction> = useDispatch();
 
     const uiState : UIState = useSelector((state: RootState) => selectUIState(state.UIState));
 

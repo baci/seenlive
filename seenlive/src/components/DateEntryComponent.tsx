@@ -1,5 +1,5 @@
 import DateEntry from '../entities/DateEntry';
-import React = require('react');
+import React from 'react';
 import { Typography, Container, Grid, IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import './../assets/scss/DateEntryComponent.scss';

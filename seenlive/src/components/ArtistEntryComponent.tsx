@@ -10,12 +10,15 @@ import {
 } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import './../assets/scss/ArtistEntryComponent.scss';
 import DateEntryComponent from './DateEntryComponent';
 import { DeleteArtistEntryThunk, DeleteDateEntryThunk, GetArtistEntriesThunk } from '../store/ArtistsSlice';
+import { RootState } from '../reducers/RootReducer';
+import { AnyAction } from 'redux';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -45,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function useArtistsSlice() {
-    const dispatch = useDispatch();
+    const dispatch: ThunkDispatch<RootState, void, AnyAction> = useDispatch();
 
     const deleteArtistEntry = (userId : string, artistEntryId : string) =>
         dispatch(DeleteArtistEntryThunk({userId, artistEntryId})).then(_ => dispatch(GetArtistEntriesThunk(userId)));

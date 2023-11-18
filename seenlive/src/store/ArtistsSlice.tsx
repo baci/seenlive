@@ -69,10 +69,9 @@ export const ArtistsSlice = createSlice({
 });
 
 export const selectSortedArtists = createSelector(
-    [state => state as ArtistsState],
-    (unsortedState : ArtistsState) => (
-        unsortedState.artistEntries.map(entry => entry).sort((a: ArtistEntry, b: ArtistEntry) => {
-            return a.artistName.localeCompare(b.artistName);
-         })
-    )
-);
+    [(state: { artists: ArtistsState }) => state.artists], // Assuming the slice of state containing artistEntries is under the 'artists' key
+    (unsortedState: ArtistsState) =>
+      unsortedState.artistEntries
+        .map(entry => entry)
+        .sort((a: ArtistEntry, b: ArtistEntry) => a.artistName.localeCompare(b.artistName))
+  );

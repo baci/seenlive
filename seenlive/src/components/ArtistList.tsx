@@ -9,10 +9,11 @@ import { UIState, UISlice, selectUIState } from '../store/UISlice';
 import ArtistEntry from '../entities/ArtistEntry';
 import { RootState } from '../reducers/RootReducer';
 import { useEffect } from 'react';
+import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 
 function useArtistsSlice() {
-    const dispatch = useDispatch();
-    const sortedArtists : ArtistEntry[] = useSelector((state: RootState) => selectSortedArtists(state.ArtistsState));
+    const dispatch: ThunkDispatch<RootState, void, AnyAction> = useDispatch();
+    const sortedArtists: ArtistEntry[] = useSelector((state: RootState) => selectSortedArtists({ artists: state.ArtistsState }));
 
     const getArtists = (userId : string) => dispatch(GetArtistEntriesThunk(userId));
 
@@ -20,7 +21,7 @@ function useArtistsSlice() {
 }
 
 function useUISlice(){
-    const dispatch = useDispatch();
+    const dispatch: ThunkDispatch<RootState, void, AnyAction> = useDispatch();
 
     const uiState : UIState = useSelector((state : RootState) => selectUIState(state.UIState));
 
