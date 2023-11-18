@@ -4,7 +4,7 @@ import DateEntryDeleteRequestDTO from '../entities/DateEntryDeleteRequestDTO';
 import { AuthHeader } from './AuthHeader';
 import ArtistDeleteRequestDTO from '../entities/ArtistDeleteRequestDTO';
 
-const baseUrl = 'https://localhost:5001/api/';
+const baseUrl = 'https://localhost:443/api/';
 
 function GetApiConfiguration(params? : string[]){
     return {

@@ -19,8 +19,8 @@
         "removeComments": true,
         "alwaysStrict": true,
         "allowUnreachableCode": false,
-        "module": "commonjs",
-        "target": "es5",
+        "module": "esnext",
+        "target": "es2018",
         "jsx": "react",
         "lib": [
             "es5",
@@ -31,9 +31,7 @@
     "include": [
         "./src/**/*"
     ],
-    "awesomeTypescriptLoaderOptions": {
-        "reportFiles": [
-            "./src/**/*"
-        ]
-    }
+    "exclude": [
+        "./node_modules/**/*"
+    ]
 }
