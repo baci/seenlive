@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { hot } from 'react-hot-loader';
-import { Typography, Box, Divider } from '@material-ui/core';
 import './../assets/scss/App.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import ArtistEntryComponent from './ArtistEntryComponent';
@@ -10,6 +9,7 @@ import ArtistEntry from '../entities/ArtistEntry';
 import { RootState } from '../reducers/RootReducer';
 import { useEffect } from 'react';
 import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
+import { Box, Divider, Typography } from '@mui/material';
 
 function useArtistsSlice() {
     const dispatch: ThunkDispatch<RootState, void, AnyAction> = useDispatch();

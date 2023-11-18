@@ -1,4 +1,4 @@
-import { useScrollTrigger, makeStyles, Theme, createStyles, Zoom } from '@material-ui/core';
+import { Theme, Zoom, createStyles, makeStyles, useScrollTrigger } from '@mui/material';
 import React from 'react';
 
 export interface Props {

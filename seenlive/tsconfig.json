@@ -20,18 +20,16 @@
         "alwaysStrict": true,
         "allowUnreachableCode": false,
         "module": "esnext",
-        "target": "es2018",
+        "target": "esnext",
         "jsx": "react",
         "lib": [
             "es5",
             "es6",
             "dom"
-        ]
+        ],
+        "extendedDiagnostics": true
     },
     "include": [
         "./src/**/*"
-    ],
-    "exclude": [
-        "./node_modules/**/*"
     ]
 }

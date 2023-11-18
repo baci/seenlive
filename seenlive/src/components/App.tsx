@@ -1,13 +1,11 @@
 import React from 'react';
-import { Toolbar, Container, Fab } from '@material-ui/core';
-import { makeStyles, createStyles } from '@material-ui/core/styles';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import ScrollTop from './ScrollTop';
 import TopMenuToolbar from './TopMenuToolbar';
 import AddArtistEntryDialog from './AddArtistEntryDialog';
 import ArtistList from './ArtistList';
 import { UISlice } from '../store/UISlice';
 import { useDispatch } from 'react-redux';
+import { Container, Fab, TabScrollButton, Toolbar, createStyles, makeStyles } from '@mui/material';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -51,11 +49,11 @@ export default function App() {
                 <ArtistList />
             </Container>
 
-            <ScrollTop>
+            <TabScrollButton direction={'right'} orientation={'vertical'}>
                 <Fab color="secondary" size="small" aria-label="scroll back to top">
                     <KeyboardArrowUpIcon />
                 </Fab>
-            </ScrollTop>
+            </TabScrollButton>
         </div>
     );
 }

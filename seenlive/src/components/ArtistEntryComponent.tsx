@@ -1,24 +1,16 @@
 import * as React from 'react';
 import ArtistEntry from '../entities/ArtistEntry';
-import {
-    Typography,
-    ExpansionPanel,
-    ExpansionPanelSummary,
-    ExpansionPanelDetails,
-    Grid,
-    IconButton,
-} from '@material-ui/core';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import './../assets/scss/ArtistEntryComponent.scss';
 import DateEntryComponent from './DateEntryComponent';
 import { DeleteArtistEntryThunk, DeleteDateEntryThunk, GetArtistEntriesThunk } from '../store/ArtistsSlice';
 import { RootState } from '../reducers/RootReducer';
 import { AnyAction } from 'redux';
+import { Accordion, AccordionDetails, AccordionSummary, Grid, IconButton, Theme, Typography, createStyles, makeStyles } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -74,13 +66,13 @@ export default function ArtistEntryComponent(props: ArtistEntryComponentProps) {
 
     return (
         <div className="entry">
-            <ExpansionPanel
+            <Accordion
                 expanded={props.expanded}
                 onChange={() => {
                     props.handleChangeExpanded(props.entry.id);
                 }}
             >
-                <ExpansionPanelSummary
+                <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls={'panel-' + props.entry.id + '-content'}
                     id={'panel-' + props.entry.id + '-header'}
@@ -101,9 +93,9 @@ export default function ArtistEntryComponent(props: ArtistEntryComponentProps) {
                     }} onFocus={(event) => event.stopPropagation()}>
                         <DeleteIcon color="secondary" fontSize="small" />
                     </IconButton>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                    <Grid container direction="column" justify="center" alignItems="stretch" spacing={3} wrap={'nowrap'}>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid container direction="column" justifyContent="center" alignItems="stretch" spacing={3} wrap={'nowrap'} component={Grid}>
                         {props.entry.dateEntries
                             .map((entry) => (
                                 <Grid item xs={12}>
@@ -126,8 +118,8 @@ export default function ArtistEntryComponent(props: ArtistEntryComponentProps) {
                                 </Grid>
                             ))}
                     </Grid>
-                </ExpansionPanelDetails>
-            </ExpansionPanel>
+                </AccordionDetails>
+            </Accordion>
         </div>
     );
 }

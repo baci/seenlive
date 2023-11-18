@@ -1,18 +1,8 @@
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import AddIcon from '@material-ui/icons/Add';
-import {
-    AppBar,
-    Toolbar,
-    IconButton,
-    Typography,
-    InputBase,
-    makeStyles,
-    Theme,
-    createStyles,
-    fade,
-    Button,
-} from '@material-ui/core';
+import { AppBar, Button, IconButton, InputBase, Toolbar, Typography } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
+import { makeStyles, createStyles, Theme } from '@mui/material/styles';
 import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,9 +24,9 @@ const useStyles = makeStyles((theme: Theme) =>
         search: {
             position: 'relative',
             borderRadius: theme.shape.borderRadius,
-            backgroundColor: fade(theme.palette.common.white, 0.15),
+            backgroundColor: 0.15,
             '&:hover': {
-                backgroundColor: fade(theme.palette.common.white, 0.25),
+                backgroundColor: 0.25,
             },
             marginRight: theme.spacing(2),
             marginLeft: theme.spacing(1),

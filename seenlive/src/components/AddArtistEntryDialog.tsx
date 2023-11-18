@@ -1,17 +1,5 @@
 import * as React from 'react';
 import 'date-fns';
-import Button from '@material-ui/core/Button';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import Dialog from '@material-ui/core/Dialog';
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-  DateTimePicker,
-} from '@material-ui/pickers';
-import { TextField } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { UIState, UISlice, selectUIState } from '../store/UISlice';
@@ -21,6 +9,10 @@ import { PROMPT_ADD_ARTIST } from '../actions/actions';
 import ArtistCreationRequestDTO from '../entities/ArtistCreationRequestDTO';
 import DateEntryCreationRequestDTO from '../entities/DateEntryCreationRequestDTO';
 import { AnyAction } from 'redux';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
 
 export interface AddArtistEntryProps {
     classes: Record<'paper', string>;
@@ -85,7 +77,7 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
 
     return (
         <Dialog
-            disableBackdropClick
+            //disableBackdropClick TODO gucken durch was das ersetzt wurde
             disableEscapeKeyDown
             maxWidth="xs"
             aria-labelledby="confirmation-dialog-title"
@@ -102,8 +94,8 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
                     onChange={handleChangeArtist}
                 />
                 <p />
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardDatePicker
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DatePicker
                         disableToolbar
                         disableFuture
                         required
@@ -120,7 +112,7 @@ export default function AddArtistEntryDialog(props: AddArtistEntryProps) {
                             'aria-label': 'change date',
                         }}
                     />
-                </MuiPickersUtilsProvider>
+                </LocalizationProvider>
                 <p />
                 <TextField id="show-location" label="Location" variant="outlined" onChange={handleChangeLocation} />
                 <p />

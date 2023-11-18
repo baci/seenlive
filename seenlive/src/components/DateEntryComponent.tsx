@@ -1,8 +1,8 @@
 import DateEntry from '../entities/DateEntry';
 import React from 'react';
-import { Typography, Container, Grid, IconButton } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
 import './../assets/scss/DateEntryComponent.scss';
+import { Container, Grid, IconButton, Typography } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export interface DateEntryComponentProps {
     dateEntry: DateEntry;
@@ -19,7 +19,7 @@ export interface DateEntryComponentProps {
 export default function DateEntryComponent(props: DateEntryComponentProps) {
     return (
         <Container maxWidth="xl">
-            <Grid container direction="row" justify="center" alignItems="center" className="container" spacing={1}>
+            <Grid container direction="row" justifyContent="center" alignItems="center" className="container" spacing={1}>
                 <Grid item className="item" xs={2}>
                     <Typography variant="body1">{props.dateEntry.date}</Typography>
                 </Grid>
