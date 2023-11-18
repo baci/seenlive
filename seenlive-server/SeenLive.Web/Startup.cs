@@ -42,7 +42,7 @@ namespace SeenLive.Web
                 {
                     const string versionString = "v1";
 
-                    options.SwaggerDoc("seenlive-" + versionString,
+                    options.SwaggerDoc(versionString,
                         new OpenApiInfo
                         {
                             Title = "SeenLive API", 
