@@ -14,7 +14,7 @@ function useArtistsSlice() {
     const dispatch = useDispatch();
     const sortedArtists : ArtistEntry[] = useSelector((state: RootState) => selectSortedArtists(state.ArtistsState));
 
-    const getArtists = () => dispatch(GetArtistEntriesThunk());
+    const getArtists = (userId : string) => dispatch(GetArtistEntriesThunk(userId));
 
     return {sortedArtists, getArtists};
 }
@@ -33,9 +33,10 @@ function ArtistList() {
 
     const {sortedArtists, getArtists} = useArtistsSlice();
     const {uiState, toggleArtistExpanded} = useUISlice();
+    const userId = "TestUserId"; // TODO Slice nutzen?
 
     useEffect(() => {
-        getArtists();
+        getArtists(userId);
     }, []);
 
     const filterByArtistName = (e : ArtistEntry) =>

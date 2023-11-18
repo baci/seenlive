@@ -16,13 +16,13 @@ namespace SeenLive.Web.Controllers
         }
 
         [HttpPost]
-        public Task<IActionResult> Authorize(string username, string password)
+        public IActionResult Authorize(string username, string password)
         {
             var user = _userRepository.Create(string.Empty, username);
             
             // TODO: Implement authentication
             
-            return Task.FromResult((IActionResult)Ok());
+            return Ok();
         }
     }
 }

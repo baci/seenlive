@@ -48,6 +48,7 @@ namespace SeenLive.Web
                             Title = "SeenLive API", 
                             Version = versionString, 
                             Contact = new OpenApiContact{ Name="Till Riemer", Email="seenlive@tillriemer.de" }
+                            
                         }
                     );
                     
@@ -77,7 +78,6 @@ namespace SeenLive.Web
         {
             AutofacContainer = app.ApplicationServices.GetAutofacRoot();
             
-            app.UseRouting();
             app.UseCors(CorsPolicyName);
             
             app.UseForwardedHeaders(new ForwardedHeadersOptions
@@ -101,16 +101,13 @@ namespace SeenLive.Web
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "SeenLive API v1");
             });
 
-            app.UseCookiePolicy();
-
             app.UseRouting();
-            
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
+            app.UseCookiePolicy();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -23,16 +25,18 @@ namespace SeenLive.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<ArtistResponseDTO>>> AddArtistEntry(ArtistCreationRequestDTO artistRequest)
+        public async Task<ActionResult<IEnumerable<ArtistResponseDTO>>> AddArtistEntry(ArtistCreationRequestDTO artistRequest, CancellationToken token)
         {
             try
             {
-                await _mediator.Send(new AddOrUpdateArtistEntryRequest(artistRequest));
+                await _mediator.Send(new AddOrUpdateArtistEntryRequest(artistRequest), token);
 
                 IEnumerable<ArtistResponseDTO> result = await _mediator.Send(new GetArtistEntriesRequest
                 {
                     UserId = artistRequest.UserId
-                });
+                }, token);
+                
+                _logger.LogDebug($"User {artistRequest.UserId} added artist {artistRequest.ArtistName} with {artistRequest.DateEntryRequests.Count()} date entries");
 
                 return Ok(result);
             }
@@ -44,7 +48,7 @@ namespace SeenLive.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> DeleteDateEntry(DateEntryDeleteRequestDTO deletionRequest)
+        public async Task<ActionResult> DeleteDateEntry(DateEntryDeleteRequestDTO deletionRequest, CancellationToken token)
         {
             try
             {
@@ -53,7 +57,7 @@ namespace SeenLive.Web.Controllers
                     ArtistId = deletionRequest.ArtistId, 
                     DateId = deletionRequest.DateId,
                     UserId = deletionRequest.UserId
-                });
+                }, token);
                 
                 return deletedDate
                     ? Ok()
@@ -67,7 +71,7 @@ namespace SeenLive.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> DeleteArtistEntry(ArtistDeleteRequestDTO request)
+        public async Task<ActionResult> DeleteArtistEntry(ArtistDeleteRequestDTO request, CancellationToken token)
         {
             try
             {
@@ -75,7 +79,7 @@ namespace SeenLive.Web.Controllers
                 {
                     ArtistEntryId = request.ArtistEntryId,
                     UserId = request.UserId,
-                });
+                }, token);
                 
                 return deletedArtist
                     ? Ok() 
@@ -89,14 +93,16 @@ namespace SeenLive.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ArtistResponseDTO>>> GetArtistEntries(string userId)
+        public async Task<ActionResult<IEnumerable<ArtistResponseDTO>>> GetArtistEntries(string userId, CancellationToken token)
         {
             try
             {
                 IEnumerable<ArtistResponseDTO> ret = await _mediator.Send(new GetArtistEntriesRequest
                 {
                     UserId = userId
-                });
+                }, token);
+                
+                _logger.LogDebug($"GetArtistEntries called for user {userId} with {ret.Count()} artist entries");
                 
                 return Ok(ret);
             }

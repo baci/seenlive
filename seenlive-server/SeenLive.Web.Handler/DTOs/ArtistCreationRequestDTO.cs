@@ -8,6 +8,6 @@ namespace SeenLive.Web.Handler.DTOs
         
         public required string ArtistName { get; set; }
 
-        public required IEnumerable<DateEntryCreationRequestDTO> DateEntryRequests { get; set; }
+        public required List<DateEntryCreationRequestDTO> DateEntryRequests { get; set; }
     }
 }
